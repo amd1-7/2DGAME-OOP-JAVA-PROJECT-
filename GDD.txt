@@ -43,5 +43,24 @@ MapLoader : Charger la map et parser la map et aussi pour et le systeme de parsi
 
 Hitbox : gerer les collisions
 
-# Partie 3: Level Design
-### PARTIE AHMED....
+# Partie 3 : Level Design & Interface Graphique (Frontend)
+
+Pour la partie visuelle et le Level Design, l'objectif principal est de proposer un rendu fluide et dynamique qui plonge direct le joueur dans une ambiance arcade à la Inazuma Eleven. L'idée est de garder une interface lisible tout en restant 100 % cohérent avec l'architecture POO développée côté moteur.
+
+3.1 Direction artistique et vue de jeu
+On a opter pour une vue 2D du dessus (Top-Down) orientée à l'horizontale. La caméra reste centrée sur le ballon pour qu'on ne perde jamais l'action des yeux. Pour le style graphiques, on part sur du pixel art dynamique : des spritesheets animées pour gérer les mouvements des joueurs (courses, tacles, frappes) et un système d'effets visuels sur le Canvas pour faire ressortir le côté "super-tir" et compétences spéciales des personnages.
+
+3.2 Conception du terrain avec Tiled
+Le terrain est découpé et construit directement sur l'éditeur Tiled (fichiers .tmx / .json). Ça nous permet de bien séparer le visuel de la logique de jeu :
+- Des calques graphiques qui gèrent le décor (la pelouse, les lignes, le public et les bancs de touche).
+- Un calque d'objets invisibles en jeu qui définit les données logiques : les points de spawn des deux équipes, les limites physiques du terrain pour les sorties, et les zones de buts (GoalHitbox).
+
+3.3 Chargement de la carte (MapLoader)
+C'est la classe MapLoader qui fait le pont entre nos fichiers Tiled et le moteur JavaFX. Elle lit la carte, extrait les images (tilesets) et instancie directement nos objets POO (les Hitbox de bordure, les zones de buts, etc.) pour les injecter directement dans le MatchManager.
+
+3.4 Interface et HUD
+Par-dessus le terrain, on ajoute une couche d'interface fixe pour donner toutes les infos essentielles en temps réel :
+- Le tableau d'affichage (score, chrono et période de jeu).
+- Les jauges d'énergie (PT/TP) affichées sous les joueurs ou sur l'écran pour savoir quand lancer un tir spécial.
+- Un mini-radar en bas de l'écran pour situer rapidement les 22 joueurs et le ballon sur le terrain.
+- Les écrans d'interface secondaires : menu de choix des tactiques avant le coup d'envoi et animations d'affrontement lors des duels entre deux joueurs.
