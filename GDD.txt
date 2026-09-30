@@ -1,0 +1,47 @@
+Introduction:
+    Mario, Zelda, Doom. Tous ces jeux emblatiques ont tous à la genèse de leur licence été créés dans un univers 2D. 
+Dans notre projet 2D Game nous devont créer un jeux en 2D, la création de ce jeux demande une définition claire de nos ambitions sur 
+premièrement les parties Level Design représenté l'apparence l'apparence des niveaux, les decors, tous les éléments permettant que le joueur soit immergé dans le jeux.
+Secondement établir une structure claire de l'architecture du jeu plus éxactement sur la logique de notre jeux ce qu'on pourrait appeler le Backend de notre jeu.
+Pour çela pour passeront par 3 phases, d'emblée nous déterminerons le style de notre jeux. Ensuite nous aborderont et établiront les éléments techniques du jeux. Enfin nous présenterons nos choix lié au level design.
+
+Partie 1:
+    Tout d'abord définition les termes style de jeux. Un style de jeu représenté la catégorie dans la quelle on le place ainsi que ses éléments qui lui sont propre.
+Pour ce projet nous avons une totale liberté concernant le choix du style de jeux, plusieurs nous sont proposés mais un type en particulier a retenu notre attention, le style sportif fantastique plus particulièrement un jeu de foot en équipe.
+Cette décision a été prise en raison des des differents défis techniques pertinent que ce style offre.
+    En effet ce style permet d'abborder de nombeuses tématiques, premièrement physique de nos joueurs et également de la balle, 
+deuxièmennt la création de bot se déplacant intéligemmment, et pour finir la création d'un mode multijoueur.
+Tous ces éléments constitue un enjeu central pour la création de notre jeu.
+    Pour exemple je peux vous citer le jeux Inazuma Eleven implémentant ces idées, dans ce jeu le systeme de bot et de magie sont des élements centraux du jeux.
+
+Partie 2: Game Design
+    Comme vue précédemment les élements techniques sont un enjeu centraux de notre projet, maintenant passons à leurs élaborations.
+Initialement nous devons caractériser nos classes et leurs differentes méthodes.
+Etant donné que nous sommes en Java, chaque instance possèdera une classe:
+
+Entite            : La classe de base. Elle représente tout objet physique sur le terrain (possède des coordonnées X/Y et une hitbox).
+
+Joueur            : Représente un footballeur sur le terrain. Il ne définit pas son poste, mais utilise des composants externes pour savoir comment se déplacer.
+
+Ball              : Gère la physique du ballon (vitesse, direction, inertie).
+
+Goal              : Une zone de collision (un rectangle invisible) placée par-dessus les buts de ta carte Tiled pour détecter si la balle a franchi la ligne.
+
+MatchManager      : Le chef d'orchestre du jeu. Il contient tous les éléments (joueurs, balle, buts), fait avancer le temps à chaque frame et gère les collisions et le score.
+
+Controleur        : Interface qui décide "qui" dirige le joueur. Peut être "Humain" (écoute ton clavier/manette) ou "IA" (décide tout seul).
+
+ComportementPoste : Définit la stratégie d'un joueur selon son rôle (Gardien, Attaquant) et lui indique où il devrait idéalement se placer sur le terrain.
+
+Camera : Fixant la balle montrant le terrain de façon horizontale.
+
+Ia : Logique par rapport au poste du joueur pour mettre le deplacement intéligent du joueur.
+
+Framework : JavaFx pour sa simplicité et son systeme de parsing de map intéligent.
+
+MapLoader : Charger la map et parser la map et aussi pour et le systeme de parsing de map intéligent provenant de JavaFx.
+
+Hitbox : gerer les collisions
+
+# Partie 3: Level Design
+### PARTIE AHMED....
