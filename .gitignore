@@ -1,2 +1,5 @@
 *pdf
 *.tmx
+bin/
+frontend/bin/
+*.class 
