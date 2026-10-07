@@ -6,14 +6,15 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public final class PlayerSprites {
-
     public static final int KIT_BLUE = 0;
     public static final int KIT_RED = 1;
     public static final int KIT_GOALKEEPER_YELLOW = 2;
     public static final int KIT_GOALKEEPER_TURQUOISE = 3;
+
     public static final int KIT_COUNT = 4;
 
     public static final int CELL = 32;
+
     public static final int PLAYER_PIXELS = 24;
 
     private static final String SHEET_PATH = "players/joueurs_anim.png";
@@ -25,8 +26,11 @@ public final class PlayerSprites {
     };
 
     private static final int[] FRAMES = {4, 8, 6, 6, 6, 7, 12, 7, 12};
+
     private static final int[] FPS = {4, 10, 14, 18, 14, 14, 12, 12, 12};
+
     private static final boolean[] LOOP = {true, true, true, true, false, false, false, false, true};
+
     private static final String[] KIT_NAMES = {"Bleu", "Rouge", "Gardien jaune", "Gardien turquoise"};
 
     private static BufferedImage sheet;
@@ -38,6 +42,8 @@ public final class PlayerSprites {
         return KIT_NAMES[Math.floorMod(kit, KIT_COUNT)];
     }
 
+    // feuille joueurs_anim.png : cases de 32 px, une ligne par animation
+    // ligne = tenue * 9 + position de l'animation dans ORDER ; images alignées de gauche à droite
     public static Map<PlayerState, Animation> load(int kit) {
         Map<PlayerState, Animation> animations = new EnumMap<>(PlayerState.class);
         BufferedImage img = getSheet();
@@ -52,6 +58,7 @@ public final class PlayerSprites {
                 int y = (k * ORDER.length + i) * CELL;
                 frames[f] = img.getSubimage(x, y, CELL, CELL);
             }
+
             animations.put(ORDER[i], new Animation(frames, 1.0 / FPS[i], LOOP[i]));
         }
         return animations;

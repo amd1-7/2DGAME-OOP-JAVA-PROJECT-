@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 public final class AssetLoader {
-
     private static final String[] BASES = {
             "frontend/resources/assets/",
             "resources/assets/",
@@ -20,19 +19,14 @@ public final class AssetLoader {
 
     public static BufferedImage loadImage(String relativePath) throws IOException {
         for (String base : BASES) {
-            File file = new File(base + relativePath);
-            if (file.isFile()) {
-                return ImageIO.read(file);
-            }
+            File f = new File(base + relativePath);
+            if (f.isFile()) return ImageIO.read(f);
         }
 
         try (InputStream in = AssetLoader.class.getResourceAsStream("/assets/" + relativePath)) {
-            if (in != null) {
-                return ImageIO.read(in);
-            }
+            if (in != null) return ImageIO.read(in);
         }
-
-        throw new IOException("Ressource graphique introuvable : " + relativePath 
-                + " (Recherchée dans : " + Arrays.toString(BASES) + ")");
+        throw new IOException("Image introuvable : " + relativePath + " (dossiers essayés : " + Arrays.toString(BASES)
+                + "). Lance le jeu depuis la racine du projet.");
     }
 }

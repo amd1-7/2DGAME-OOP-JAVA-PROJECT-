@@ -11,26 +11,28 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class GamePanel extends JPanel implements Runnable {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     public static final int MAP_WIDTH = 1600;
     public static final int MAP_HEIGHT = 1200;
 
-    /** Affiche l'aide des touches de test en bas de l'écran. Mettre à false pour la retirer. */
     private static final boolean SHOW_TEST_HUD = true;
 
     private Thread gameThread;
     private boolean isRunning = false;
 
-    private Player player;      // pour l'instant : UN SEUL joueur
+    private Player player;
     private Camera camera;
+    private Field field;
+    // touche H : affiche collisions et zones
+    private boolean debugView = false;
 
-    
+    // volatile : écrit par le thread clavier, lu par le thread du jeu
     private volatile boolean up, down, left, right;
     private volatile boolean sprint;
-    
+
+    // touches enfoncées : évite que la répétition clavier relance une action
     private final Set<Integer> heldKeys = new HashSet<>();
 
     public GamePanel() {
@@ -38,22 +40,25 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
 
-        
+        // pour une autre tenue au départ : new Player(800, 600, PlayerSprites.KIT_RED)
         this.player = new Player(800, 600);
         this.camera = new Camera(WIDTH, HEIGHT, MAP_WIDTH, MAP_HEIGHT);
+        this.field = new Field();
+        this.player.setWorld(field);
 
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 int code = e.getKeyCode();
+
                 if (code == KeyEvent.VK_Z || code == KeyEvent.VK_UP) up = true;
                 if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) down = true;
                 if (code == KeyEvent.VK_Q || code == KeyEvent.VK_LEFT) left = true;
                 if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) right = true;
                 if (code == KeyEvent.VK_SHIFT) sprint = true;
+
                 if (heldKeys.add(code)) testActionKey(code);
 
-                // choix de tenue : géré à part car les touches 1-4 dépendent du clavier 
                 int kitKey = kitFromKey(e);
                 if (kitKey >= 0 && heldKeys.add(e.getExtendedKeyCode() + 100000)) player.setKit(kitKey);
             }
@@ -72,6 +77,8 @@ public class GamePanel extends JPanel implements Runnable {
         });
     }
 
+    // renvoie la tenue (0 à 3) demandée par la touche, ou -1
+    // touches acceptées : 1-4 (QWERTY), & é " ' (AZERTY), pavé numérique, F1-F4
     private static int kitFromKey(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_NUMPAD1, KeyEvent.VK_F1 -> { return PlayerSprites.KIT_BLUE; }
@@ -89,16 +96,19 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // touches de TEST des animations : à supprimer quand le back appellera player.play(...)
     private void testActionKey(int code) {
         switch (code) {
             case KeyEvent.VK_SPACE -> player.play(PlayerState.SHOOTING);
             case KeyEvent.VK_V -> player.play(PlayerState.PASSING);
             case KeyEvent.VK_X -> player.play(PlayerState.SUPER_SHOOTING);
             case KeyEvent.VK_C -> player.play(PlayerState.TACKLING);
-            case KeyEvent.VK_B -> {     // B = interrupteur : lance / arrête la célébration
+            case KeyEvent.VK_H -> debugView = !debugView;
+            case KeyEvent.VK_B -> {
                 if (player.getState() == PlayerState.CELEBRATING) player.stopAction();
                 else player.play(PlayerState.CELEBRATING);
             }
+
             default -> { }
         }
     }
@@ -107,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
         isRunning = true;
         gameThread = new Thread(this);
         gameThread.start();
-        this.requestFocusInWindow();     
+        this.requestFocusInWindow();
     }
 
     @Override
@@ -118,7 +128,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         while (isRunning) {
             long now = System.nanoTime();
-            double deltaTime = (now - lastTime) / 1_000_000_000.0;   // temps écoulé en secondes
+            double deltaTime = (now - lastTime) / 1_000_000_000.0;
             lastTime = now;
 
             update(deltaTime);
@@ -133,7 +143,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void update(double deltaTime) {
-        player.setSprinting(sprint);     
+        player.setSprinting(sprint);
         player.update(deltaTime, up, down, left, right, MAP_WIDTH, MAP_HEIGHT);
         camera.update(player.getX(), player.getY());
     }
@@ -143,8 +153,8 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.setColor(new Color(34, 139, 34));    // fond vert provisoire (la vraie map viendra plus tard)
-        g2.fillRect(0, 0, WIDTH, HEIGHT);
+        field.render(g2, camera);
+        if (debugView) field.renderDebug(g2, camera);
 
         player.render(g2, camera);
         if (SHOW_TEST_HUD) drawTestHud(g2);
@@ -157,9 +167,12 @@ public class GamePanel extends JPanel implements Runnable {
         g2.fillRect(0, 0, WIDTH, 26);
         g2.fillRect(0, HEIGHT - 26, WIDTH, 26);
         g2.setColor(Color.WHITE);
-        g2.drawString("État : " + player.getState() + "   |   Tenue : " + PlayerSprites.kitName(player.getKit()), 10, 18);
+        Hitbox hb = player.getHitbox();
+        Zone zone = field.getZoneAt(hb.getX() + hb.getWidth() / 2, hb.getY() + hb.getHeight() / 2);
+        g2.drawString("État : " + player.getState() + "   |   Tenue : " + PlayerSprites.kitName(player.getKit())
+                + "   |   Zone : " + zone, 10, 18);
         g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        g2.drawString("ZQSD/flèches bouger | Shift accélérer | Espace tir | V passe | X super-tir | C tacle | B célébration | 1-4 ou F1-F4 tenue",
+        g2.drawString("ZQSD/flèches bouger | Shift accélérer | Espace tir | V passe | X super-tir | C tacle | B célébration | H collisions | 1-4 (&é\"') tenue",
                 10, HEIGHT - 9);
     }
 }

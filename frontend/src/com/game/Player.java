@@ -11,16 +11,25 @@ import java.util.Map;
 public class Player {
     public static final int SIZE = 48;
 
+    // hitbox de collision : 32 x 32 px, centrée dans le carré d'affichage de 48 px
+    public static final int HITBOX_INSET = 8;
+    public static final int HITBOX_SIZE = SIZE - 2 * HITBOX_INSET;
+
     private float x, y;
     private float speed = 200.0f;
     private Direction currentDirection = Direction.DOWN;
     private PlayerState currentState = PlayerState.IDLE;
 
     private int kit = PlayerSprites.KIT_BLUE;
+
     private Map<PlayerState, Animation> animations = new EnumMap<>(PlayerState.class);
     private PlayerState action = null;
     private boolean sprinting = false;
+    // 0 = regarde à droite, PI/2 = vers le bas
     private double angle = Math.PI / 2;
+
+    // terrain contre lequel on entre en collision (null = pas de collision)
+    private Field world = null;
 
     public Player(float startX, float startY) {
         this(startX, startY, PlayerSprites.KIT_BLUE);
@@ -32,8 +41,10 @@ public class Player {
         setKit(kit);
     }
 
+    // appelée 60 fois par seconde : déplacement, collisions, puis choix de l'animation
     public synchronized void update(double deltaTime, boolean up, boolean down, boolean left, boolean right, int mapWidth, int mapHeight) {
         boolean isMoving = false;
+        float oldX = x, oldY = y;
 
         if (up) { y -= speed * deltaTime; currentDirection = Direction.UP; isMoving = true; }
         if (down) { y += speed * deltaTime; currentDirection = Direction.DOWN; isMoving = true; }
@@ -45,6 +56,10 @@ public class Player {
         if (x > mapWidth - 48) x = mapWidth - 48;
         if (y > mapHeight - 48) y = mapHeight - 48;
 
+        // annule la partie du déplacement qui entrerait dans un poteau ou un filet
+        if (world != null) resolveCollisions(oldX, oldY, mapWidth, mapHeight);
+
+        // orientation du sprite : angle de la direction pressée (diagonales comprises)
         int dx = (right ? 1 : 0) - (left ? 1 : 0);
         int dy = (down ? 1 : 0) - (up ? 1 : 0);
         if (dx != 0 || dy != 0) angle = Math.atan2(dy, dx);
@@ -54,6 +69,7 @@ public class Player {
             if (a == null || a.isFinished()) action = null;
         }
 
+        // état choisi par priorité : action > déplacement > repos
         PlayerState next;
         if (action != null) next = action;
         else if (isMoving) next = sprinting ? PlayerState.SPRINTING : PlayerState.WALKING;
@@ -67,6 +83,35 @@ public class Player {
 
         Animation current = animations.get(currentState);
         if (current != null) current.update(deltaTime);
+    }
+
+    private void resolveCollisions(float oldX, float oldY, int mapWidth, int mapHeight) {
+        float targetX = x, targetY = y;
+        float dx = targetX - oldX, dy = targetY - oldY;
+        if (dx == 0 && dy == 0) return;
+
+        // on rejoue le déplacement par pas de 4 px (impossible de sauter par-dessus un poteau),
+        // axe X puis axe Y : le joueur glisse le long de l'obstacle au lieu de rester collé
+        int steps = Math.max(1, (int) Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 4f));
+        float sx = dx / steps, sy = dy / steps;
+        x = oldX;
+        y = oldY;
+
+        for (int i = 0; i < steps; i++) {
+            x += sx;
+            Hitbox hit = world.firstCollision(getHitbox());
+            if (hit != null && sx != 0) {
+                x = sx > 0 ? hit.getX() - HITBOX_INSET - HITBOX_SIZE : hit.getRight() - HITBOX_INSET;
+            }
+            y += sy;
+            hit = world.firstCollision(getHitbox());
+            if (hit != null && sy != 0) {
+                y = sy > 0 ? hit.getY() - HITBOX_INSET - HITBOX_SIZE : hit.getBottom() - HITBOX_INSET;
+            }
+        }
+
+        x = Math.max(0, Math.min(x, mapWidth - 48));
+        y = Math.max(0, Math.min(y, mapHeight - 48));
     }
 
     public synchronized void render(Graphics2D g, Camera camera) {
@@ -86,9 +131,12 @@ public class Player {
 
         AffineTransform oldTransform = g.getTransform();
         Object oldHint = g.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
         g.rotate(angle, cx, cy);
+
+        // la case de la feuille fait 32 px pour un joueur de 24 px : on agrandit pour que le joueur fasse SIZE
         int drawSize = SIZE * PlayerSprites.CELL / PlayerSprites.PLAYER_PIXELS;
         g.drawImage(currentImage, (int) Math.round(cx - drawSize / 2.0), (int) Math.round(cy - drawSize / 2.0),
                 drawSize, drawSize, null);
@@ -97,6 +145,8 @@ public class Player {
         if (oldHint != null) g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, oldHint);
     }
 
+    // SHOOTING, PASSING, SUPER_SHOOTING, TACKLING : jouées une fois puis retour à IDLE/WALKING
+    // CELEBRATING : en boucle jusqu'à stopAction()
     public synchronized void play(PlayerState state) {
         if (state == null || !state.isAction()) {
             action = null;
@@ -109,8 +159,15 @@ public class Player {
 
     public synchronized void stopAction() { action = null; }
 
+    public synchronized void setWorld(Field world) { this.world = world; }
+
+    public synchronized Hitbox getHitbox() {
+        return new Hitbox(x + HITBOX_INSET, y + HITBOX_INSET, HITBOX_SIZE, HITBOX_SIZE);
+    }
+
     public void setSprinting(boolean sprinting) { this.sprinting = sprinting; }
 
+    // tenue : 0 bleu, 1 rouge, 2 gardien jaune, 3 gardien turquoise (constantes PlayerSprites.KIT_...)
     public synchronized void setKit(int kit) {
         this.kit = Math.floorMod(kit, PlayerSprites.KIT_COUNT);
         this.animations = PlayerSprites.load(this.kit);
