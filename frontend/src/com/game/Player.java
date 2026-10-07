@@ -1,44 +1,38 @@
 package com.game;
 
-import javax.imageio.ImageIO;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class Player {
+    public static final int SIZE = 48;
+
     private float x, y;
     private float speed = 200.0f;
     private Direction currentDirection = Direction.DOWN;
     private PlayerState currentState = PlayerState.IDLE;
-    
-    private Animation walkAnim;
-    private BufferedImage idleSprite;
+
+    private int kit = PlayerSprites.KIT_BLUE;
+    private Map<PlayerState, Animation> animations = new EnumMap<>(PlayerState.class);
+    private PlayerState action = null;
+    private boolean sprinting = false;
+    private double angle = Math.PI / 2;
 
     public Player(float startX, float startY) {
-        this.x = startX;
-        this.y = startY;
-
-        try {
-            BufferedImage sheet = ImageIO.read(new File("frontend/resources/assets/players/joueurs.png"));
-            int tileWidth = sheet.getWidth() / 8;
-            int tileHeight = sheet.getHeight() / 4;
-
-            this.idleSprite = sheet.getSubimage(0, 0, tileWidth, tileHeight);
-
-            BufferedImage[] walkFrames = new BufferedImage[4];
-            for (int i = 0; i < 4; i++) {
-                walkFrames[i] = sheet.getSubimage(i * tileWidth, 0, tileWidth, tileHeight);
-            }
-
-            this.walkAnim = new Animation(walkFrames, 0.15);
-
-        } catch (IOException e) {
-            System.err.println("Erreur de chargement du sprite : " + e.getMessage());
-        }
+        this(startX, startY, PlayerSprites.KIT_BLUE);
     }
 
-    public void update(double deltaTime, boolean up, boolean down, boolean left, boolean right, int mapWidth, int mapHeight) {
+    public Player(float startX, float startY, int kit) {
+        this.x = startX;
+        this.y = startY;
+        setKit(kit);
+    }
+
+    public synchronized void update(double deltaTime, boolean up, boolean down, boolean left, boolean right, int mapWidth, int mapHeight) {
         boolean isMoving = false;
 
         if (up) { y -= speed * deltaTime; currentDirection = Direction.UP; isMoving = true; }
@@ -51,26 +45,82 @@ public class Player {
         if (x > mapWidth - 48) x = mapWidth - 48;
         if (y > mapHeight - 48) y = mapHeight - 48;
 
-        currentState = isMoving ? PlayerState.WALKING : PlayerState.IDLE;
+        int dx = (right ? 1 : 0) - (left ? 1 : 0);
+        int dy = (down ? 1 : 0) - (up ? 1 : 0);
+        if (dx != 0 || dy != 0) angle = Math.atan2(dy, dx);
 
-        if (currentState == PlayerState.WALKING && walkAnim != null) {
-            walkAnim.update(deltaTime);
+        if (action != null) {
+            Animation a = animations.get(action);
+            if (a == null || a.isFinished()) action = null;
         }
+
+        PlayerState next;
+        if (action != null) next = action;
+        else if (isMoving) next = sprinting ? PlayerState.SPRINTING : PlayerState.WALKING;
+        else next = PlayerState.IDLE;
+
+        if (next != currentState) {
+            Animation a = animations.get(next);
+            if (a != null) a.reset();
+            currentState = next;
+        }
+
+        Animation current = animations.get(currentState);
+        if (current != null) current.update(deltaTime);
     }
 
-    public void render(Graphics2D g, Camera camera) {
+    public synchronized void render(Graphics2D g, Camera camera) {
         int renderX = (int) (x - camera.getX());
         int renderY = (int) (y - camera.getY());
+        double cx = renderX + SIZE / 2.0;
+        double cy = renderY + SIZE / 2.0;
 
-        BufferedImage currentImage = idleSprite;
-        if (currentState == PlayerState.WALKING && walkAnim != null) {
-            currentImage = walkAnim.getCurrentFrame();
+        Animation anim = animations.get(currentState);
+        BufferedImage currentImage = anim != null ? anim.getCurrentFrame() : null;
+
+        if (currentImage == null) {
+            g.setColor(Color.ORANGE);
+            g.fillOval(renderX, renderY, SIZE, SIZE);
+            return;
         }
 
-        if (currentImage != null) {
-            g.drawImage(currentImage, renderX, renderY, 48, 48, null);
-        }
+        AffineTransform oldTransform = g.getTransform();
+        Object oldHint = g.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
+        g.rotate(angle, cx, cy);
+        int drawSize = SIZE * PlayerSprites.CELL / PlayerSprites.PLAYER_PIXELS;
+        g.drawImage(currentImage, (int) Math.round(cx - drawSize / 2.0), (int) Math.round(cy - drawSize / 2.0),
+                drawSize, drawSize, null);
+
+        g.setTransform(oldTransform);
+        if (oldHint != null) g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, oldHint);
     }
+
+    public synchronized void play(PlayerState state) {
+        if (state == null || !state.isAction()) {
+            action = null;
+            return;
+        }
+        action = state;
+        Animation a = animations.get(state);
+        if (a != null) a.reset();
+    }
+
+    public synchronized void stopAction() { action = null; }
+
+    public void setSprinting(boolean sprinting) { this.sprinting = sprinting; }
+
+    public synchronized void setKit(int kit) {
+        this.kit = Math.floorMod(kit, PlayerSprites.KIT_COUNT);
+        this.animations = PlayerSprites.load(this.kit);
+        this.action = null;
+    }
+
+    public synchronized boolean isActionPlaying() { return action != null; }
+    public PlayerState getState() { return currentState; }
+    public Direction getDirection() { return currentDirection; }
+    public int getKit() { return kit; }
 
     public float getX() { return x; }
     public float getY() { return y; }
