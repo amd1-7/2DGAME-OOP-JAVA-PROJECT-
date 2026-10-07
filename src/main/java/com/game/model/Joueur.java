@@ -9,7 +9,7 @@ public class Joueur extends Entite{
     private double vitesse;
     private double puissanceTir;
     protected Direction directionBut;
-    protected Direction directionRegard = directionBut;
+    protected Direction directionRegard;
 
     public Joueur(Vector2D position,Vector2D velocite,Vector2D acceleration,Hitbox hitbox,Equipe equipe,double vitesse,double puissanceTir,Direction directionBut){
         super(position, velocite, acceleration, hitbox);
@@ -17,6 +17,7 @@ public class Joueur extends Entite{
         this.vitesse = vitesse;
         this.puissanceTir = puissanceTir;
         this.directionBut = directionBut;
+        this.directionRegard = directionBut;
     }
 
     public Equipe getEquipe() {
