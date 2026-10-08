@@ -46,4 +46,11 @@ public class Vector2D{
         double calcul = (v.getX() - this.x) * (v.getX() - this.x) +  (v.getY() - this.y) * (v.getY() - this.y);
         return Math.sqrt(calcul);
     }
+
+    public Vector2D scale(Vector2D v){
+        double x = this.x * v.x;
+        double y = this.y * v.y;
+
+        return new Vector2D(x, y);
+    }
 }
