@@ -43,21 +43,7 @@ public abstract class Entite {
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
     }
-    public void update(double dt){
-        Vector2D accelerationCpy = new Vector2D(this.acceleration.getX(), this.acceleration.getY());
-        accelerationCpy.multiply(dt);
-        this.velocite.add(accelerationCpy);
 
-
-        Vector2D velociteCpy = new Vector2D(this.velocite.getX(), this.velocite.getY());
-        velociteCpy.multiply(dt);
-        position.add(velociteCpy);
-
-        this.velocite.multiply(0.95);
-        this.acceleration.multiply(0);
-        if(this.hitbox != null) this.hitbox.setPosition(this.position);
-    }
-
+    abstract public void update(double dt);
     abstract public void render(GraphicsContext gc);
-
 }
