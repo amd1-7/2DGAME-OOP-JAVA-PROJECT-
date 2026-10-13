@@ -42,4 +42,12 @@ public class Hitbox {
     if (min == bas)    return Direction.DOWN;
     return Direction.UP;
 }
+    public Vector2D getCentre() {
+        return position.add(new Vector2D(width / 2, height / 2));
+    }
+
+    public boolean contient(Vector2D point) {
+        return point.getX() >= position.getX() && point.getX() <= position.getX() + width
+            && point.getY() >= position.getY() && point.getY() <= position.getY() + height;
+    }
 }
