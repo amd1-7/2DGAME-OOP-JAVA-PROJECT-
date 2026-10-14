@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 *.pdf
 *.tmx
 /target/
 *.zip
 .vscode/
 *.png
+=======
+*pdf
+*.tmx
+bin/
+frontend/bin/
+*.class 
+>>>>>>> feature/frontend
