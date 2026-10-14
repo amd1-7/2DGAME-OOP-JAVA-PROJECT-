@@ -5,7 +5,6 @@ import com.game.models.physics.Hitbox;
 import com.game.models.physics.Vector2D;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class Goal {
     private final Equipe equipe;
