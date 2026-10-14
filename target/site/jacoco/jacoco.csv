@@ -1,0 +1,14 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+game,com.game.model.powers,Pouvoir.Type,0,24,0,0,0,3,0,1,0,1
+game,com.game.model.powers,Pouvoir,0,34,0,0,0,13,0,7,0,7
+game,com.game.model.powers,Hulk,38,16,3,1,11,4,3,2,1,2
+game,com.game.model,Entite,12,88,0,2,6,22,3,8,3,7
+game,com.game.model,Equipe,0,24,0,0,0,3,0,1,0,1
+game,com.game.model,Joueur,69,90,15,15,10,21,13,11,3,6
+game,com.game.model,Ball,18,100,1,5,3,23,2,7,1,5
+game,com.game.model.physics,Hitbox,8,97,2,14,4,15,4,12,2,6
+game,com.game.model.physics,Vector2D,0,128,0,2,0,22,0,10,0,9
+game,com.game.model.physics,Direction,0,116,0,0,0,13,0,3,0,3
+game,com.game.model.input,ControleurHumain.Action,0,74,0,0,0,8,0,1,0,1
+game,com.game.model.input,ControleurHumain,9,185,3,27,0,38,3,20,0,8
+game,com.game.engine,MatchManager,11,0,0,0,4,0,1,0,1,0

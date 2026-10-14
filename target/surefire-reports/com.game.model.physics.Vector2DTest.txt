@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.game.model.physics.Vector2DTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.game.model.physics.Vector2DTest

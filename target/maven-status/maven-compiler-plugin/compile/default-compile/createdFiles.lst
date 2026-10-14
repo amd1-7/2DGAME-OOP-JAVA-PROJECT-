@@ -1,0 +1,10 @@
+com/game/model/Equipe.class
+com/game/model/powers/Pouvoir$Type.class
+com/game/model/powers/Pouvoir.class
+com/game/model/physics/Direction.class
+com/game/model/powers/Hulk.class
+com/game/model/physics/Vector2D.class
+com/game/model/Joueur.class
+com/game/model/Ball.class
+com/game/model/Entite.class
+com/game/model/physics/Hitbox.class
