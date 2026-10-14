@@ -1,5 +1,6 @@
-*pdf
+*.pdf
 *.tmx
-./target
-*zip
-/vscode
+/target/
+*.zip
+.vscode/
+*.png
