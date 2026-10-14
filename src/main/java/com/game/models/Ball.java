@@ -70,6 +70,7 @@ public class Ball extends Entite {
             Hitbox hitboxJoueur = i.getHitbox();
             if(this.getHitbox().intersect(hitboxJoueur) != null){
                 this.proprietaire = i;
+                i.setIsProprietaire(true);
                 break;
             }
         }
@@ -93,6 +94,7 @@ public class Ball extends Entite {
         this.exProprietaire = this.proprietaire;
         Joueur lanceur = this.exProprietaire;
         this.proprietaire = null;
+        this.exProprietaire.setIsProprietaire(false);
 
         this.vitesse = lanceur.getDernierOrientation().multiply(600);
         this.acceleration = new Vector2D(0, 0);
@@ -106,6 +108,7 @@ public class Ball extends Entite {
         this.exProprietaire = this.proprietaire;
         Joueur lanceur = this.exProprietaire;
         this.proprietaire = null;
+        this.exProprietaire.setIsProprietaire(false);
 
         this.vitesse = lanceur.getDernierOrientation().multiply(lanceur.getPuissanceTir() * 120);
         this.acceleration = new Vector2D(0, 0);

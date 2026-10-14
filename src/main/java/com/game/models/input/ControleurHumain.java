@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.game.models.Ball.Etat;
+import com.game.models.Joueur.EtatJoueur;
 import com.game.models.physics.Direction;
 import com.game.models.physics.Vector2D;
 
@@ -13,15 +14,17 @@ public class ControleurHumain implements Controleur{
 
     private Map<KeyCode,Direction> touches;
     private Map<KeyCode,Etat> touchesSpecial;
+    private Map<KeyCode,EtatJoueur> touchesAction;
     private Set<KeyCode> toucheAppuyee = new HashSet<>();
 
-    public ControleurHumain(Map<KeyCode,Direction> touches, Map<KeyCode,Etat> touchesSpecial){
+    public ControleurHumain(Map<KeyCode,Direction> touches, Map<KeyCode,Etat> touchesSpecial,Map<KeyCode,EtatJoueur> touchesAction){
         this.touches = touches;
         this.touchesSpecial = touchesSpecial;
+        this.touchesAction = touchesAction;
     }
 
     public void toucheAppuyee(KeyCode k){
-        if(!touches.containsKey(k) && !touchesSpecial.containsKey(k)) return;
+        if(!touches.containsKey(k) && !touchesSpecial.containsKey(k) && !touchesAction.containsKey(k)) return;
         if(toucheAppuyee.add(k)) return;
     }
     public void toucheRelachee(KeyCode k){
@@ -49,5 +52,14 @@ public class ControleurHumain implements Controleur{
         }
         return etat;
     }
-
+    public EtatJoueur getActionJoueurSansballon(){
+        EtatJoueur etatJoueur = EtatJoueur.IDLE;
+        for (KeyCode i : toucheAppuyee){
+            if(touchesAction.containsKey(i)){
+                etatJoueur = touchesAction.get(i);
+                break;
+            }
+        }
+        return etatJoueur;
+    }
 }

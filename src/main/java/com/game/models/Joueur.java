@@ -23,6 +23,7 @@ public class Joueur extends Entite {
     private double puissanceTir;
     private Vector2D dernierOrientation;
     private EtatJoueur etatJoueur = EtatJoueur.IDLE;
+    private boolean isProprietaire = false;
 
    public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir){
         super(position, vitesse, acceleration, hitbox);
@@ -31,6 +32,15 @@ public class Joueur extends Entite {
         this.image = image;
         this.puissanceTir = puissanceTir;
     }
+
+
+    public boolean getIsProprietaire(){
+        return this.isProprietaire;
+    }
+    public void setIsProprietaire(boolean isProprietaire) {
+        this.isProprietaire = isProprietaire;
+    }
+
 
     public Vector2D getDernierOrientation() {
         return dernierOrientation;
@@ -106,7 +116,7 @@ public class Joueur extends Entite {
     }
 
     public void tacler(){
-        if (this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS)return;
+        if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == true)return;
         this.etatJoueur = EtatJoueur.TACLE;
         PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
         pause.setOnFinished(e->{
@@ -115,7 +125,7 @@ public class Joueur extends Entite {
         pause.play();
     }
     public void tirer(){
-        if (this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS)return;
+        if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == false)return;
         this.etatJoueur = EtatJoueur.TIRE;
         PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
         pause.setOnFinished(e->{
@@ -124,7 +134,7 @@ public class Joueur extends Entite {
         pause.play();
     }
     public void passer(){
-        if (this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS)return;
+        if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == false)return;
         this.etatJoueur = EtatJoueur.PASSE;
         PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
         pause.setOnFinished(e->{
