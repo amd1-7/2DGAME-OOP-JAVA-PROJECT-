@@ -78,10 +78,9 @@ public class Joueur extends Entite {
         if(this.vitesse.norm() < 27.5) this.etatJoueur = EtatJoueur.IDLE;
         else this.etatJoueur = EtatJoueur.COURS;
 
-        System.out.println(etatJoueur);
-
-        this.Collision(murs);
         this.getHitbox().setPosition(this.position);
+        this.Collision(murs);
+        this.setEtatJoueur(this.getControleurs().getActionJoueurSansballon());
     }
 
     void Collision(Murs[] murs){

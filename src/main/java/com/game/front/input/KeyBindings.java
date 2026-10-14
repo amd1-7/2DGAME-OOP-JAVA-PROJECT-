@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.game.models.Ball;
+import com.game.models.Joueur.EtatJoueur;
 import com.game.models.input.ControleurHumain;
 import com.game.models.physics.Direction;
 
@@ -13,7 +14,7 @@ public final class KeyBindings {
     private KeyBindings() {}
 
     public static ControleurHumain createController() {
-        return new ControleurHumain(moveKeys(), actionKeys());
+        return new ControleurHumain(moveKeys(), actionKeys(),actionSansBallonKey());
     }
 
     private static Map<KeyCode, Direction> moveKeys() {
@@ -34,6 +35,12 @@ public final class KeyBindings {
         Map<KeyCode, Ball.Etat> keys = new HashMap<>();
         keys.put(KeyCode.SPACE, Ball.Etat.TIRE);
         keys.put(KeyCode.V, Ball.Etat.PASSE);
+        return keys;
+    }
+
+    private static Map<KeyCode,EtatJoueur> actionSansBallonKey(){
+        Map<KeyCode, EtatJoueur> keys = new HashMap<>();
+        keys.put(KeyCode.SPACE, EtatJoueur.TACLE);
         return keys;
     }
 }

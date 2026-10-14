@@ -1,5 +1,6 @@
 package com.game.models;
 
+import com.game.models.Joueur.EtatJoueur;
 import com.game.models.physics.Direction;
 import com.game.models.physics.Hitbox;
 import com.game.models.physics.Vector2D;
@@ -53,12 +54,13 @@ public class Ball extends Entite {
             return;
         }
         double k = 1.5;              
-        this.Collision(murs);                            
+        this.Collision(murs);                      
         this.vitesse   = this.vitesse.add(this.vitesse.multiply(-k * dt));
         this.position  = this.position.add(this.vitesse.multiply(dt));
         this.getHitbox().setPosition(this.position);
         this.delaiRecup -= dt;
         this.Recup(joueurs);
+        this.etreTacle(joueurs);
     }
 
     private void Recup(Joueur[] joueurs){
@@ -114,6 +116,19 @@ public class Ball extends Entite {
         this.acceleration = new Vector2D(0, 0);
         this.etat = Etat.TIRE;
         this.delaiRecup = 0.5;
+    }
+
+    private void etreTacle(Joueur[] joueurs){
+        if(this.proprietaire == null) return;
+        for(Joueur i:joueurs){
+            Hitbox hitboxJoueur = i.getHitbox();
+            if(this.getHitbox().intersect(hitboxJoueur) != null && i.getEtatJoueur() == EtatJoueur.TACLE){
+                this.exProprietaire = this.proprietaire;
+                this.proprietaire = i;
+                break;
+            }
+
+        }
     }
 
     void Collision(Murs[] murs){
