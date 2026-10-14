@@ -1,8 +1,11 @@
 package com.game.engine;
 
 import com.game.models.Ball;
+import com.game.models.Equipe;
+import com.game.models.Goal;
 import com.game.models.Joueur;
 import com.game.models.Murs;
+import com.game.models.physics.Direction;
 import com.game.models.physics.Hitbox;
 import com.game.models.physics.Vector2D;
 
@@ -15,10 +18,8 @@ public class MatchManager extends AnimationTimer {
     private GraphicsContext gc;
     private Joueur joueur;
     private Joueur[] joueurs;
-    private Murs murs = new Murs(new Vector2D(200, 200), new Hitbox(new Vector2D(200, 200), 50, 200000));
-    private Murs[] m = new Murs[]{
-        murs
-    };
+    private Goal goal = new Goal(Equipe.Gauche, new Vector2D(455, 400), Direction.RIGHT, 160, 80, 15, 30);
+    private Murs[] m = goal.getMurs();
     private Ball balle;
 
     public MatchManager(GraphicsContext gc,Joueur joueur,Scene scene){
@@ -53,7 +54,9 @@ public class MatchManager extends AnimationTimer {
         this.balle.update(dt, m, joueurs);
         gc.clearRect(0, 0, 800, 800);
         this.joueur.render(gc);
-        this.murs.render(gc);
+        for (Murs i:this.m){
+            i.render(gc);
+        }
         this.balle.render(gc);
     }
 }
