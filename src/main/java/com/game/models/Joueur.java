@@ -3,6 +3,7 @@ import com.game.models.input.ControleurHumain;
 import com.game.models.physics.Direction;
 import com.game.models.physics.Hitbox;
 import com.game.models.physics.Vector2D;
+import com.game.view.spritesheet.Annimation;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,18 +20,23 @@ public class Joueur extends Entite {
     }
     
     private ControleurHumain controleurs;
-    private Image image;
     private double puissanceTir;
     private Vector2D dernierOrientation;
     private EtatJoueur etatJoueur = EtatJoueur.IDLE;
     private boolean isProprietaire = false;
+    private Annimation annimation;
 
-   public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir){
+    private int indexCourse = 1;
+    private int indexTire = 1;
+    private int indexPasse = 1;
+    private double timerAnimation = 0;
+
+   public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir,Annimation annimation){
         super(position, vitesse, acceleration, hitbox);
 
         this.controleurs = controleurs;
-        this.image = image;
         this.puissanceTir = puissanceTir;
+        this.annimation = annimation;
     }
 
 
@@ -75,10 +81,23 @@ public class Joueur extends Entite {
         this.vitesse = this.vitesse.add(this.acceleration.multiply(dt));
         this.position = this.position.add(this.vitesse.multiply(dt));
 
-        if(this.vitesse.norm() < 27.5) this.etatJoueur = EtatJoueur.IDLE;
-        else this.etatJoueur = EtatJoueur.COURS;
+        switch (this.controleurs.getActionJoueurSansballon()) {
+            case IDLE ->{
+                if(this.vitesse.norm() < 27.5) this.etatJoueur = EtatJoueur.IDLE;
+                else this.etatJoueur = EtatJoueur.COURS;
+            }
 
-        System.out.println(etatJoueur);
+            case PASSE ->{
+                this.passer();
+            }
+            case TACLE ->{
+                this.tacler();
+            }
+            case TIRE ->{
+                this.tirer();
+            }
+            default -> {;}
+        }
 
         this.Collision(murs);
         this.getHitbox().setPosition(this.position);
@@ -144,7 +163,62 @@ public class Joueur extends Entite {
     }
 
 
-    public void render(GraphicsContext gc){
-        gc.drawImage(this.image, this.position.getX(), this.position.getY());
+    public void render(GraphicsContext gc,double dt){
+        switch (this.etatJoueur) {
+            case IDLE ->{
+                this.indexTire = 0;
+                this.indexCourse = 0;
+                this.indexPasse = 0;
+
+                gc.drawImage(this.annimation.getIdle(), this.position.getX(), this.position.getY());
+            }
+
+            case COURS ->{
+                this.indexTire = 0;
+                this.indexPasse = 0;
+                this.timerAnimation += dt;
+                
+                if(0.1 <= this.timerAnimation){
+                    if (this.indexCourse +1 < this.annimation.getListImageCourse().size())this.indexCourse++;
+                    else this.indexCourse = 0;
+                    this.timerAnimation -= 0.1;
+                }
+                
+                gc.drawImage(this.annimation.getListImageCourse().get(this.indexCourse), this.position.getX(), this.position.getY());
+            }
+            
+            case PASSE ->{
+                this.indexTire = 0;
+                this.indexCourse = 0;
+                this.timerAnimation += dt;
+
+                if(0.1 <= this.timerAnimation){
+                    if (this.indexPasse +1 < this.annimation.getListImageCourse().size())this.indexPasse++;
+                    else this.indexPasse = 0;
+                    this.timerAnimation -= 0.1;
+                }
+                
+                gc.drawImage(this.annimation.getListImagePasse().get(this.indexPasse), this.position.getX(), this.position.getY());
+            }
+
+            case TIRE ->{
+                this.indexCourse = 0;
+                this.indexPasse = 0;
+                this.timerAnimation += dt;
+
+                if(0.1 <= this.timerAnimation){
+                    if (this.indexTire +1 < this.annimation.getListImageCourse().size())this.indexTire++;
+                    else this.indexTire = 0;
+                    this.timerAnimation -= 0.1;
+                    }
+                
+                gc.drawImage(this.annimation.getListImageTire().get(this.indexTire), this.position.getX(), this.position.getY());
+            }
+            case TACLE ->{;}
+            default ->{;}
+        }
     }
+
+    @Override
+    void render(GraphicsContext gc) {return ;}
 }

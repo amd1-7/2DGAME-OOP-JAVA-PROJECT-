@@ -2,10 +2,13 @@ package com.game;
 
 import com.game.models.Joueur;
 import com.game.models.Ball.Etat;
+import com.game.models.Joueur.EtatJoueur;
 import com.game.engine.MatchManager;
 import com.game.models.input.ControleurHumain;
 import com.game.models.physics.Hitbox;
 import com.game.models.physics.Vector2D;
+import com.game.view.spritesheet.Annimation;
+import com.game.view.spritesheet.DefAnimation.CouleuraAnnimation;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -45,10 +48,17 @@ public class MainApp extends Application{
          Map<KeyCode,Etat> controleSpecial = new HashMap<>();
         controleSpecial.put(KeyCode.F, Etat.TIRE);
         controleSpecial.put(KeyCode.D, Etat.PASSE);
-        ControleurHumain controleur = new ControleurHumain(controle,controleSpecial);
 
-        Image image = new Image(getClass().getResourceAsStream("./png.png"), 64, 64, true, true);
-        Joueur joueur = new Joueur(position, position.multiply(0), position.multiply(0),hitbox,controleur,image,10);
+         Map<KeyCode,EtatJoueur> controleAction = new HashMap<>();
+         controleAction.put(KeyCode.D, EtatJoueur.PASSE);
+         controleAction.put(KeyCode.F, EtatJoueur.TIRE);
+         controleAction.put(KeyCode.K, EtatJoueur.TACLE);
+
+        ControleurHumain controleur = new ControleurHumain(controle,controleSpecial,controleAction);
+
+        Image image = new Image(getClass().getResourceAsStream("/assets/players/joueurs_anim.png"));
+        Annimation anim = new Annimation(CouleuraAnnimation.ROUGE, image);
+        Joueur joueur = new Joueur(position, position.multiply(0), position.multiply(0),hitbox,controleur,image,10,anim);
 
         MatchManager mm = new MatchManager(gc, joueur, scene);
 

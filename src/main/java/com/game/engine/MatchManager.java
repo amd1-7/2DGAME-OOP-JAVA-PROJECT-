@@ -53,7 +53,7 @@ public class MatchManager extends AnimationTimer {
         this.joueur.update(dt,m);
         this.balle.update(dt, m, joueurs);
         gc.clearRect(0, 0, 800, 800);
-        this.joueur.render(gc);
+        this.joueur.render(gc,dt);
         for (Murs i:this.m){
             i.render(gc);
         }
