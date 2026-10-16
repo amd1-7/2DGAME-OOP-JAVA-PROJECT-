@@ -164,13 +164,14 @@ public class Joueur extends Entite {
 
 
     public void render(GraphicsContext gc,double dt){
+        Image img = this.annimation.getIdle();
         switch (this.etatJoueur) {
             case IDLE ->{
                 this.indexTire = 0;
                 this.indexCourse = 0;
                 this.indexPasse = 0;
 
-                gc.drawImage(this.annimation.getIdle(), this.position.getX(), this.position.getY());
+                img = this.annimation.getIdle();
             }
 
             case COURS ->{
@@ -184,7 +185,7 @@ public class Joueur extends Entite {
                     this.timerAnimation -= 0.1;
                 }
                 
-                gc.drawImage(this.annimation.getListImageCourse().get(this.indexCourse), this.position.getX(), this.position.getY());
+                img = this.annimation.getListImageCourse().get(this.indexCourse);
             }
             
             case PASSE ->{
@@ -198,7 +199,7 @@ public class Joueur extends Entite {
                     this.timerAnimation -= 0.1;
                 }
                 
-                gc.drawImage(this.annimation.getListImagePasse().get(this.indexPasse), this.position.getX(), this.position.getY());
+                img = this.annimation.getListImagePasse().get(this.indexPasse);
             }
 
             case TIRE ->{
@@ -211,11 +212,25 @@ public class Joueur extends Entite {
                     else this.indexTire = 0;
                     this.timerAnimation -= 0.1;
                     }
-                
-                gc.drawImage(this.annimation.getListImageTire().get(this.indexTire), this.position.getX(), this.position.getY());
+                img = this.annimation.getListImageTire().get(this.indexTire);
             }
             case TACLE ->{;}
             default ->{;}
+        }
+
+        Vector2D dir = this.getDernierOrientation();
+
+        if (dir.getX() != 0 || dir.getY() != 0) {
+            double angle = Math.toDegrees(Math.atan2(dir.getY(), dir.getX()));
+
+            gc.save();
+            gc.translate(this.position.getX() + 32 / 2.0, this.position.getY() + 32 / 2.0);
+            gc.rotate(angle);
+            gc.drawImage(img, -32 / 2.0, -32 / 2.0, 32, 32);
+            gc.restore();
+        } 
+        else {
+            gc.drawImage(img, this.position.getX(), this.position.getY(), 32, 32);
         }
     }
 
