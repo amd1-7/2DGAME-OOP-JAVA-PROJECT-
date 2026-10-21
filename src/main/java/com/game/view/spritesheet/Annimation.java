@@ -12,6 +12,7 @@ public class Annimation {
     private ArrayList<Image> listImageCourse = new ArrayList<>();
     private ArrayList<Image> listImageTire = new ArrayList<>();
     private ArrayList<Image> listImagePasse = new ArrayList<>();
+    private ArrayList<Image> listImageTacle = new ArrayList<>();
     private ArrayList<Image> listImageCelebration = new ArrayList<>();
 
     private ArrayList<Image> listImageSuperVitesse = new ArrayList<>();
@@ -94,6 +95,13 @@ public class Annimation {
                     for (int n = 1;n<= i.MaxColone();n++){
                         int colonne = (n - 1) * 32;
                         this.listImageCelebration.add(new WritableImage(reader,colonne,ligne,32,32));   
+                    }
+                }
+                case TACLE->{
+                    int ligne = (this.couleurAnimation.getCouleurindex() + i.getLigne() - 1) * 32;
+                    for (int n = 1;n<= i.MaxColone();n++){
+                        int colonne = (n - 1) * 32;
+                        this.listImageTacle.add(new WritableImage(reader,colonne,ligne,32,32));   
                     }
                 }
                 default ->{;}

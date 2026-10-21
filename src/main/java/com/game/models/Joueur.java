@@ -29,6 +29,7 @@ public class Joueur extends Entite {
     private int indexCourse = 1;
     private int indexTire = 1;
     private int indexPasse = 1;
+    private int indexTacle = 1;
     private double timerAnimation = 0;
 
    public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir,Annimation annimation){
@@ -170,6 +171,7 @@ public class Joueur extends Entite {
                 this.indexTire = 0;
                 this.indexCourse = 0;
                 this.indexPasse = 0;
+                this.indexTacle = 0;
 
                 img = this.annimation.getIdle();
             }
@@ -177,6 +179,7 @@ public class Joueur extends Entite {
             case COURS ->{
                 this.indexTire = 0;
                 this.indexPasse = 0;
+                this.indexTacle = 0;
                 this.timerAnimation += dt;
                 
                 if(0.1 <= this.timerAnimation){
@@ -191,6 +194,7 @@ public class Joueur extends Entite {
             case PASSE ->{
                 this.indexTire = 0;
                 this.indexCourse = 0;
+                this.indexTacle = 0;
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
@@ -205,6 +209,7 @@ public class Joueur extends Entite {
             case TIRE ->{
                 this.indexCourse = 0;
                 this.indexPasse = 0;
+                this.indexTacle = 0;
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
@@ -214,7 +219,19 @@ public class Joueur extends Entite {
                     }
                 img = this.annimation.getListImageTire().get(this.indexTire);
             }
-            case TACLE ->{;}
+            case TACLE ->{
+                this.indexCourse = 0;
+                this.indexPasse = 0;
+                this.indexTire = 0;
+                this.timerAnimation += dt;
+
+                if(0.1 <= this.timerAnimation){
+                    if (this.indexTire +1 < this.annimation.getListImageCourse().size())this.indexTire++;
+                    else this.indexTire = 0;
+                    this.timerAnimation -= 0.1;
+                    }
+                img = this.annimation.getListImageTire().get(this.indexTacle);
+            }
             default ->{;}
         }
 

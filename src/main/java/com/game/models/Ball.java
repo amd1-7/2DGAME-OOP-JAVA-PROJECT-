@@ -46,7 +46,10 @@ public class Ball extends Entite {
         if(this.proprietaire != null){
             Etat actionJouer = this.proprietaire.getControleurs().getActionJoueur();
             switch (actionJouer) {
-                case EN_POSSESSION -> {this.touche2Balle();}
+                case EN_POSSESSION -> {
+                    this.touche2Balle();
+                    this.etreTacle(joueurs);
+                }
                 case PASSE -> {this.passeBalle();}
                 case TIRE -> {this.tireBalle();}
                 case LIBRE -> {;}
@@ -60,7 +63,6 @@ public class Ball extends Entite {
         this.getHitbox().setPosition(this.position);
         this.delaiRecup -= dt;
         this.Recup(joueurs);
-        this.etreTacle(joueurs);
     }
 
     private void Recup(Joueur[] joueurs){
@@ -124,7 +126,9 @@ public class Ball extends Entite {
             Hitbox hitboxJoueur = i.getHitbox();
             if(this.getHitbox().intersect(hitboxJoueur) != null && i.getEtatJoueur() == EtatJoueur.TACLE){
                 this.exProprietaire = this.proprietaire;
+                this.exProprietaire.setIsProprietaire(false);
                 this.proprietaire = i;
+                i.setIsProprietaire(true);
                 break;
             }
 

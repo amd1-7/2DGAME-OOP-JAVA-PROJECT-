@@ -25,7 +25,8 @@ public class DefAnimation {
         CElEBRATION(12,9),
 
         SUPER_VITESSE(7,8),
-        SUPER_TIRE(12,7);
+        SUPER_TIRE(12,7),
+        TACLE(4,8);
 
         private int col;
         private int ligne;
