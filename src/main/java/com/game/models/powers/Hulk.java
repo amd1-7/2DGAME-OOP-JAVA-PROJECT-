@@ -8,7 +8,7 @@ import javafx.util.Duration;
 public class Hulk extends Pouvoir{
     private double power = 800;
     public Hulk(Joueur joueur){
-        super("Hulk",Type.ATTAQUE,Duration.minutes(1),Duration.seconds(30),joueur); /* 30 SECONDES */
+        super("Hulk",Type.ATTAQUE,Duration.minutes(1),Duration.seconds(20),joueur);
     }
 
     public void activate() {
