@@ -73,8 +73,8 @@ public class Joueur extends Entite {
 
     @Override
     public void update(double dt,Murs[] murs){
-        double f = 1250;
-        double k = 2;
+        double f = 1200;
+        double k = 5;
         Vector2D force = this.getControleurs().getDirection().multiply(f);
         if (this.getControleurs().getDirection().norm() > 0) this.dernierOrientation = this.getControleurs().getDirection().normalize();
         
