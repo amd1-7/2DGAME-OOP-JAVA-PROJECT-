@@ -46,6 +46,12 @@ public class Annimation {
     public ArrayList<Image> getListImageSuperTire() {
         return listImageSuperTire;
     }
+    public ArrayList<Image> getListImageTacle() {
+        return listImageTacle;
+    }
+    public ArrayList<Image> getListeImageGlacon() {
+        return listeImageGlacon;
+    }
 
     private void loadAnimation(Image img){
         PixelReader reader = img.getPixelReader();

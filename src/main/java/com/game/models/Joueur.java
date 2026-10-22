@@ -16,10 +16,12 @@ public class Joueur extends Entite {
     TACLE,
     TIRE,
     PASSE,
-    COURS   
+    COURS,
+    Glace   
     }
     
     private ControleurHumain controleurs;
+    private ControleurHumain controleurscpy;
     private double puissanceTir;
     private Vector2D dernierOrientation;
     private EtatJoueur etatJoueur = EtatJoueur.IDLE;
@@ -30,12 +32,14 @@ public class Joueur extends Entite {
     private int indexTire = 1;
     private int indexPasse = 1;
     private int indexTacle = 1;
+    private int indexGlace = 1;
     private double timerAnimation = 0;
 
    public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir,Annimation annimation){
         super(position, vitesse, acceleration, hitbox);
 
         this.controleurs = controleurs;
+        this.controleurscpy = controleurs;
         this.puissanceTir = puissanceTir;
         this.annimation = annimation;
     }
@@ -73,6 +77,7 @@ public class Joueur extends Entite {
 
     @Override
     public void update(double dt,Murs[] murs){
+        this.EtreGlace();
         double f = 1200;
         double k = 5;
         Vector2D force = this.getControleurs().getDirection().multiply(f);
@@ -163,6 +168,15 @@ public class Joueur extends Entite {
         pause.play();
     }
 
+    private void EtreGlace(){
+        if(this.etatJoueur != EtatJoueur.Glace && this.controleurs != null) return;
+        if(this.etatJoueur != EtatJoueur.Glace && this.controleurs == null){
+            this.controleurs = this.controleurscpy;
+            return;
+        }
+        if(this.etatJoueur == EtatJoueur.Glace && this.controleurs != null)this.controleurs = null;
+    }
+
 
     public void render(GraphicsContext gc,double dt){
         Image img = this.annimation.getIdle();
@@ -230,7 +244,20 @@ public class Joueur extends Entite {
                     else this.indexTire = 0;
                     this.timerAnimation -= 0.1;
                     }
-                img = this.annimation.getListImageTire().get(this.indexTacle);
+                img = this.annimation.getListImageTacle().get(this.indexTacle);
+            }
+            case Glace->{
+                this.indexCourse = 0;
+                this.indexPasse = 0;
+                this.indexTire = 0;
+                this.timerAnimation += dt;
+
+                if(0.625 <= this.timerAnimation){
+                    if(this.indexTire +1 < this.annimation.getListeImageGlacon().size())this.indexGlace++;
+                    else this.indexGlace = 0;
+                    this.timerAnimation -= 0.625;
+                }
+                img = this.annimation.getListeImageGlacon().get(indexGlace);
             }
             default ->{;}
         }
