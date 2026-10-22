@@ -14,6 +14,7 @@ abstract public class Pouvoir {
     private boolean dispo;
     private Duration duréeActivate;
     private Duration duréeCharge;
+    protected Joueur joueur;
 
     protected PauseTransition timerActivate;
     protected PauseTransition timerCharge;
@@ -38,13 +39,14 @@ abstract public class Pouvoir {
         this.dispo = dispo;
     }
 
-    public Pouvoir(String name,Type type,Duration timerCharge,Duration timerActivate){
+    public Pouvoir(String name,Type type,Duration timerCharge,Duration timerActivate,Joueur joueur){
         this.name = name;
         this.type = type;
         this.duréeCharge = timerCharge;
         this.duréeActivate = timerActivate;
+        this.joueur = joueur;
     }
 
-    abstract void activate(Joueur j);
-    abstract void charge();
+    abstract void activate();
+    protected abstract void charge();
 }

@@ -7,25 +7,29 @@ import javafx.util.Duration;
 
 public class Hulk extends Pouvoir{
     private double power = 800;
-    public Hulk(){
-        super("Hulk",Type.ATTAQUE,Duration.minutes(1),Duration.seconds(30)); /* 30 SECONDES */
+    public Hulk(Joueur joueur){
+        super("Hulk",Type.ATTAQUE,Duration.minutes(1),Duration.seconds(30),joueur); /* 30 SECONDES */
     }
 
-    public void activate(Joueur j) {
+    public void activate() {
         if(!this.getDispo()) return;
-        double puissanceinitial = j.getPuissanceTir();
-        j.setPuissanceTir(this.power);
+        double puissanceinitial = this.joueur.getPuissanceTir();
+        this.joueur.setPuissanceTir(this.power);
+        this.setDispo(false);
 
         this.timerActivate = new PauseTransition(this.getDuréeActivate());
+        this.timerActivate.setOnFinished(e->{
 
-        j.setPuissanceTir(puissanceinitial);
-        this.setDispo(false);
-        this.charge();
+            this.joueur.setPuissanceTir(puissanceinitial);
+            this.charge();
+        });
     }
 
-    public void charge() {
+    protected void charge() {
         if(this.getDispo()) return;
         this.timerCharge = new PauseTransition(this.getDuréeCharge());
-        this.setDispo(true);
+        this.timerCharge.setOnFinished(e->{
+            this.setDispo(true);
+        });
     }
 }
