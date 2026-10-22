@@ -80,16 +80,24 @@ public class Ball extends Entite {
         }
     }
 
-    private void touche2Balle(){
+     private void touche2Balle(){
         if(this.proprietaire == null) return;
         this.etat = Etat.EN_POSSESSION;
+ 
+        Hitbox hJoueur = this.proprietaire.getHitbox();
+        Hitbox hBalle  = this.getHitbox();
+ 
+        Vector2D centreJoueur = hJoueur.getCentre();
 
-       Vector2D centreJoueur = this.proprietaire.getPosition().add(new Vector2D(this.proprietaire.getHitbox().getWidth(),this.proprietaire.getHitbox().getHeight()));
-       double distance = 0.8 *(this.proprietaire.getHitbox().getWidth() + this.getHitbox().getWidth()) / 2;
-       Vector2D cible = centreJoueur.add(this.proprietaire.getDernierOrientation().multiply(distance))
-                        .sub(new Vector2D(this.getHitbox().getWidth()/2, this.getHitbox().getHeight()/2));
-       this.position = position.add(cible.sub(position));
-       this.getHitbox().setPosition(this.position);
+        double distance = 0.5 * (hJoueur.getWidth() + hBalle.getWidth()) * 0.9;
+ 
+        Vector2D orientation = this.proprietaire.getDernierOrientation();
+        if (orientation == null || orientation.norm() == 0) orientation = new Vector2D(1, 0);
+ 
+        Vector2D centreBalle = centreJoueur.add(orientation.normalize().multiply(distance));
+ 
+        this.position = centreBalle.sub(new Vector2D(hBalle.getWidth() / 2, hBalle.getHeight() / 2));
+        hBalle.setPosition(this.position);
     }
 
     private void passeBalle(){
