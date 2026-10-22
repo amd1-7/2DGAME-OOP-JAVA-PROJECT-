@@ -17,6 +17,7 @@ public class Annimation {
 
     private ArrayList<Image> listImageSuperVitesse = new ArrayList<>();
     private ArrayList<Image> listImageSuperTire = new ArrayList<>();
+    private ArrayList<Image> listeImageGlacon = new ArrayList<>();
 
 
     public Annimation(DefAnimation.CouleuraAnnimation c,Image spritesheet){
@@ -102,6 +103,21 @@ public class Annimation {
                     for (int n = 1;n<= i.MaxColone();n++){
                         int colonne = (n - 1) * 32;
                         this.listImageTacle.add(new WritableImage(reader,colonne,ligne,32,32));   
+                    }
+                }
+                case Glacon->{
+                    int index = 0;
+                    switch (this.couleurAnimation) {
+                        case BLEU->{index = 0;}
+                        case ROUGE->{index = 1;}
+                        case JAUNE->{index = 2;}
+                        case CYAN->{index = 3;}
+                        default -> {;}
+                    };
+                    int ligne = (index + i.getLigne() -1) * 32;
+                    for (int n = 1;n <= i.MaxColone();n++){
+                        int colonne = (n - 1) * 32;
+                        this.listeImageGlacon.add(new WritableImage(reader,colonne,ligne,32,32)); 
                     }
                 }
                 default ->{;}
