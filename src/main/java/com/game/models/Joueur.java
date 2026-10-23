@@ -18,7 +18,8 @@ public class Joueur extends Entite {
     PASSE,
     COURS,
     Glace,
-    Pouvoir
+    Pouvoir,
+    Celebration
     }
     
     protected ControleurHumain controleurs;
@@ -33,6 +34,7 @@ public class Joueur extends Entite {
     private int indexPasse = 1;
     private int indexTacle = 1;
     private int indexGlace = 1;
+    private int indexCelebration = 1;
     private double timerAnimation = 0;
 
    public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir,Annimation annimation){
@@ -72,6 +74,15 @@ public class Joueur extends Entite {
     }
     public void setEtatJoueur(EtatJoueur etatJoueur) {
         this.etatJoueur = etatJoueur;
+    }
+
+    public void reset(Vector2D coin){
+    this.position = coin;
+    this.vitesse = new Vector2D(0, 0);
+    this.acceleration = new Vector2D(0, 0);
+    this.getHitbox().setPosition(coin);
+    this.etatJoueur = EtatJoueur.IDLE;
+    this.controleurs.setActif(true);
     }
 
     @Override
@@ -175,6 +186,8 @@ public class Joueur extends Entite {
                 this.indexCourse = 0;
                 this.indexPasse = 0;
                 this.indexTacle = 0;
+                this.indexGlace = 0;
+                this.indexCelebration = 0;
 
                 img = this.annimation.getIdle();
             }
@@ -183,6 +196,8 @@ public class Joueur extends Entite {
                 this.indexTire = 0;
                 this.indexPasse = 0;
                 this.indexTacle = 0;
+                this.indexGlace = 0;
+                this.indexCelebration = 0;
                 this.timerAnimation += dt;
                 
                 if(0.1 <= this.timerAnimation){
@@ -198,6 +213,8 @@ public class Joueur extends Entite {
                 this.indexTire = 0;
                 this.indexCourse = 0;
                 this.indexTacle = 0;
+                this.indexGlace = 0;
+                this.indexCelebration = 0;
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
@@ -213,6 +230,8 @@ public class Joueur extends Entite {
                 this.indexCourse = 0;
                 this.indexPasse = 0;
                 this.indexTacle = 0;
+                this.indexGlace = 0;
+                this.indexCelebration = 0;
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
@@ -226,11 +245,13 @@ public class Joueur extends Entite {
                 this.indexCourse = 0;
                 this.indexPasse = 0;
                 this.indexTire = 0;
+                this.indexGlace = 0;
+                this.indexCelebration = 0;
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
-                    if (this.indexTire +1 < this.annimation.getListImageCourse().size())this.indexTire++;
-                    else this.indexTire = 0;
+                    if (this.indexTacle +1 < this.annimation.getListImageCourse().size())this.indexTacle++;
+                    else this.indexTacle = 0;
                     this.timerAnimation -= 0.1;
                     }
                 img = this.annimation.getListImageTacle().get(this.indexTacle);
@@ -239,14 +260,31 @@ public class Joueur extends Entite {
                 this.indexCourse = 0;
                 this.indexPasse = 0;
                 this.indexTire = 0;
+                this.indexTacle = 0;
+                this.indexCelebration = 0;
                 this.timerAnimation += dt;
 
                 if(0.625 <= this.timerAnimation){
-                    if(this.indexTire +1 < this.annimation.getListeImageGlacon().size())this.indexGlace++;
+                    if(this.indexGlace +1 < this.annimation.getListeImageGlacon().size())this.indexGlace++;
                     else this.indexGlace = 0;
                     this.timerAnimation -= 0.625;
                 }
                 img = this.annimation.getListeImageGlacon().get(indexGlace);
+            }
+            case Celebration ->{
+                this.indexCourse = 0;
+                this.indexPasse = 0;
+                this.indexTire = 0;
+                this.indexTacle = 0;
+                this.indexGlace = 0;
+                this.timerAnimation += dt;
+
+                if(0.1 <= this.timerAnimation){
+                    if(this.indexCelebration +1 < this.annimation.getListeImageGlacon().size())this.indexCelebration++;
+                    else this.indexCelebration = 0;
+                    this.timerAnimation -= 0.625;
+                }
+                img = this.annimation.getListImageCelebration().get(indexCelebration);
             }
             default ->{;}
         }
