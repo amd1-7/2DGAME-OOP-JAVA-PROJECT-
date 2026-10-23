@@ -15,6 +15,6 @@ public class PepePersonnage extends Personnage {
 
     @Override
     public void ActivatePower(){
-            ((Pepe)this.pouvoir).activate();
+        this.pouvoir.activate();
     }
 }

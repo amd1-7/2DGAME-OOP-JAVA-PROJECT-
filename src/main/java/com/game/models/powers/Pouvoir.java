@@ -47,6 +47,6 @@ abstract public class Pouvoir {
         this.joueur = joueur;
     }
 
-    abstract void activate();
+    public abstract void activate();
     protected abstract void charge();
 }

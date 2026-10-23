@@ -17,15 +17,16 @@ public class Joueur extends Entite {
     TIRE,
     PASSE,
     COURS,
-    Glace   
+    Glace,
+    Pouvoir
     }
     
     private ControleurHumain controleurs;
     private ControleurHumain controleurscpy;
     private double puissanceTir;
-    private Vector2D dernierOrientation;
-    private EtatJoueur etatJoueur = EtatJoueur.IDLE;
-    private boolean isProprietaire = false;
+    protected Vector2D dernierOrientation;
+    protected  EtatJoueur etatJoueur = EtatJoueur.IDLE;
+    protected  boolean isProprietaire = false;
     private Annimation annimation;
 
     private int indexCourse = 1;
@@ -109,7 +110,7 @@ public class Joueur extends Entite {
         this.getHitbox().setPosition(this.position);
     }
 
-    void Collision(Murs[] murs){
+    protected void Collision(Murs[] murs){
         for (Murs mur : murs) {
         Hitbox m = mur.getHitbox();
         Direction d = this.getHitbox().intersect(m);
@@ -168,7 +169,7 @@ public class Joueur extends Entite {
         pause.play();
     }
 
-    private void EtreGlace(){
+    protected void EtreGlace(){
         if(this.etatJoueur != EtatJoueur.Glace && this.controleurs != null) return;
         if(this.etatJoueur != EtatJoueur.Glace && this.controleurs == null){
             this.controleurs = this.controleurscpy;
