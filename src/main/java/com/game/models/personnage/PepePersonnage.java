@@ -8,9 +8,12 @@ import com.game.models.powers.Pepe;
 import com.game.view.spritesheet.Annimation;
 
 public class PepePersonnage extends Personnage {
-    public PepePersonnage(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,Annimation annimation,ControleurHumain controleurs,Joueur joueurAdverse){
+    public PepePersonnage(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,Annimation annimation,ControleurHumain controleurs){
         super(position, hitbox, annimation, controleurs, 15);
-        this.setPouvoir(new Pepe(this,joueurAdverse));
+    }
+    
+    public void setPouvoirJoueur(Joueur joueurAdverse) {
+        this.setPouvoir(new Pepe(this, joueurAdverse));
     }
 
     @Override

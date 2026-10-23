@@ -22,6 +22,7 @@ public class Pepe extends Pouvoir {
             this.charge();
             this.joueurAdversaire.setEtatJoueur(EtatJoueur.IDLE);
         });
+        this.timerActivate.play();
     }
 
     @Override
@@ -31,5 +32,6 @@ public class Pepe extends Pouvoir {
         this.timerCharge.setOnFinished(e->{
             this.setDispo(true);
         });
+        this.timerCharge.play();
     }
 }

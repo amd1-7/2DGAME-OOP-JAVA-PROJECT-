@@ -6,7 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 public class Hulk extends Pouvoir{
-    private double power = 800;
+    private double power = 75;
     public Hulk(Joueur joueur){
         super("Hulk",Type.ATTAQUE,Duration.minutes(1),Duration.seconds(20),joueur);
     }
@@ -23,6 +23,7 @@ public class Hulk extends Pouvoir{
             this.joueur.setPuissanceTir(puissanceinitial);
             this.charge();
         });
+        this.timerActivate.play();
     }
 
     protected void charge() {
@@ -31,5 +32,6 @@ public class Hulk extends Pouvoir{
         this.timerCharge.setOnFinished(e->{
             this.setDispo(true);
         });
+        this.timerCharge.play();
     }
 }

@@ -20,9 +20,9 @@ public class Annimation {
     private ArrayList<Image> listeImageGlacon = new ArrayList<>();
 
 
-    public Annimation(DefAnimation.CouleuraAnnimation c,Image spritesheet){
+    public Annimation(DefAnimation.CouleuraAnnimation c,Image spritesheet,Image spritesheetGlacon){
         this.couleurAnimation = c;
-        this.loadAnimation(spritesheet);
+        this.loadAnimation(spritesheet,spritesheetGlacon);
     }
 
     public Image getIdle() {
@@ -53,8 +53,9 @@ public class Annimation {
         return listeImageGlacon;
     }
 
-    private void loadAnimation(Image img){
+    private void loadAnimation(Image img,Image imgGlacon){
         PixelReader reader = img.getPixelReader();
+        PixelReader reader2 = imgGlacon.getPixelReader();
         for(DefAnimation.AnimationPosition i:DefAnimation.AnimationPosition.values()){
             switch (i) {
                 case IDLE -> {
@@ -123,7 +124,7 @@ public class Annimation {
                     int ligne = (index + i.getLigne() -1) * 32;
                     for (int n = 1;n <= i.MaxColone();n++){
                         int colonne = (n - 1) * 32;
-                        this.listeImageGlacon.add(new WritableImage(reader,colonne,ligne,32,32)); 
+                        this.listeImageGlacon.add(new WritableImage(reader2,colonne,ligne,32,32)); 
                     }
                 }
                 default ->{;}

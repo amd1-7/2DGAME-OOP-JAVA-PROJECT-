@@ -63,7 +63,7 @@ public class ControleurHumain implements Controleur{
     }
     public EtatJoueur getActionJoueurSansballon(){
         EtatJoueur etatJoueur = EtatJoueur.IDLE;
-        if(!this.actif)return etatJoueur;
+        if(!this.actif)return EtatJoueur.Glace;
         
         for (KeyCode i : toucheAppuyee){
             if(touchesAction.containsKey(i)){

@@ -45,6 +45,12 @@ abstract public class Pouvoir {
         this.duréeCharge = timerCharge;
         this.duréeActivate = timerActivate;
         this.joueur = joueur;
+
+        PauseTransition first = new PauseTransition(Duration.seconds(20));
+        first.setOnFinished(e->{
+            this.dispo = true;
+        });
+        first.play();
     }
 
     public abstract void activate();
