@@ -56,4 +56,13 @@ abstract public class Personnage extends Joueur{
         this.Collision(murs);
         this.getHitbox().setPosition(this.position);
     }
+
+     private void EtreGlace(){
+        if(this.etatJoueur != EtatJoueur.Glace && this.controleurs.getActif()) return;
+        if(this.etatJoueur != EtatJoueur.Glace && !this.controleurs.getActif()){
+            this.controleurs.setActif(true);
+            return;
+        }
+        if(this.etatJoueur == EtatJoueur.Glace && this.controleurs.getActif())this.controleurs.setActif(false);;
+    }
 }

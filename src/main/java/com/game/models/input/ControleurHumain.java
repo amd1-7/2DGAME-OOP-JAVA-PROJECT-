@@ -16,11 +16,18 @@ public class ControleurHumain implements Controleur{
     private Map<KeyCode,Etat> touchesSpecial;
     private Map<KeyCode,EtatJoueur> touchesAction;
     private Set<KeyCode> toucheAppuyee = new HashSet<>();
+    private boolean actif = true;
 
     public ControleurHumain(Map<KeyCode,Direction> touches, Map<KeyCode,Etat> touchesSpecial,Map<KeyCode,EtatJoueur> touchesAction){
         this.touches = touches;
         this.touchesSpecial = touchesSpecial;
         this.touchesAction = touchesAction;
+    }
+    public boolean getActif(){
+        return this.actif;
+    }
+    public void setActif(boolean actif) {
+        this.actif = actif;
     }
 
     public void toucheAppuyee(KeyCode k){
@@ -33,6 +40,7 @@ public class ControleurHumain implements Controleur{
 
     public Vector2D getDirection(){
         Vector2D v = new Vector2D(0, 0);
+        if(!this.actif)return v;
         for (KeyCode i :toucheAppuyee){
             if(touches.containsKey(i)){
                 v = v.add(this.touches.get(i).getVector());
@@ -43,6 +51,7 @@ public class ControleurHumain implements Controleur{
 
     public Etat getActionJoueur(){
         Etat etat = Etat.EN_POSSESSION;
+        if(!this.actif)return etat;
 
         for (KeyCode i : toucheAppuyee){
             if(touchesSpecial.containsKey(i)){
@@ -54,6 +63,8 @@ public class ControleurHumain implements Controleur{
     }
     public EtatJoueur getActionJoueurSansballon(){
         EtatJoueur etatJoueur = EtatJoueur.IDLE;
+        if(!this.actif)return etatJoueur;
+        
         for (KeyCode i : toucheAppuyee){
             if(touchesAction.containsKey(i)){
                 etatJoueur = touchesAction.get(i);

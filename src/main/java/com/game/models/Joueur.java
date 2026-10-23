@@ -21,8 +21,7 @@ public class Joueur extends Entite {
     Pouvoir
     }
     
-    private ControleurHumain controleurs;
-    private ControleurHumain controleurscpy;
+    protected ControleurHumain controleurs;
     private double puissanceTir;
     protected Vector2D dernierOrientation;
     protected  EtatJoueur etatJoueur = EtatJoueur.IDLE;
@@ -40,7 +39,6 @@ public class Joueur extends Entite {
         super(position, vitesse, acceleration, hitbox);
 
         this.controleurs = controleurs;
-        this.controleurscpy = controleurs;
         this.puissanceTir = puissanceTir;
         this.annimation = annimation;
     }
@@ -78,7 +76,6 @@ public class Joueur extends Entite {
 
     @Override
     public void update(double dt,Murs[] murs){
-        this.EtreGlace();
         double f = 1200;
         double k = 5;
         Vector2D force = this.getControleurs().getDirection().multiply(f);
@@ -167,15 +164,6 @@ public class Joueur extends Entite {
             this.etatJoueur = EtatJoueur.IDLE;
         });
         pause.play();
-    }
-
-    protected void EtreGlace(){
-        if(this.etatJoueur != EtatJoueur.Glace && this.controleurs != null) return;
-        if(this.etatJoueur != EtatJoueur.Glace && this.controleurs == null){
-            this.controleurs = this.controleurscpy;
-            return;
-        }
-        if(this.etatJoueur == EtatJoueur.Glace && this.controleurs != null)this.controleurs = null;
     }
 
 
