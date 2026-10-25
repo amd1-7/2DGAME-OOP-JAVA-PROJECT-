@@ -1,0 +1,87 @@
+Introduction:
+    Mario, Zelda, Doom : toutes ces licences emblématiques ont vu le jour dans un univers 2D.
+Dans notre projet 2D Game, nous devons créer un jeu en 2D. Sa création demande de définir clairement nos ambitions sur deux axes :
+d'abord le Level Design, c'est-à-dire l'apparence des niveaux, les décors et tous les éléments qui plongent le joueur dans le jeu ;
+ensuite une architecture claire de la logique du jeu, ce que l'on peut appeler le Backend.
+Pour cela, nous passerons par trois phases : nous déterminerons d'abord le style du jeu, puis nous établirons ses éléments techniques,
+et enfin nous présenterons nos choix de level design.
+
+Partie 1 : Le style de jeu
+    Un style de jeu représente la catégorie dans laquelle on place un jeu, ainsi que les éléments qui lui sont propres.
+Pour ce projet, nous avions une totale liberté de choix. Nous avons retenu le jeu de sport arcade, et plus précisément un duel de
+football en 1 contre 1 : deux joueurs s'affrontent sur le même clavier, sur un terrain vu de dessus.
+    Notre concept a évolué par rapport à l'idée de départ (un match d'équipe à 11 contre 11 avec bots et multijoueur en ligne).
+Nous avons choisi de nous concentrer sur un jeu plus court, plus nerveux et entièrement abouti. Ce style reste riche en défis techniques :
+    - la physique des joueurs et du ballon (accélération, frottements, rebonds sur les murs, collisions) ;
+    - la gestion de la possession du ballon : récupération, tir, passe et tacle ;
+    - des pouvoirs spéciaux façon "super-pouvoirs" (Hulk, Pépé), qui apportent le côté fantastique du jeu ;
+    - plusieurs cartes avec des obstacles différents, et des réglages de partie (durée, score à atteindre, mort subite).
+    Pour exemple, nous pouvons citer le jeu Inazuma Eleven, dont nous reprenons l'esprit : un football arcade où les capacités
+spéciales des personnages sont un élément central.
+
+Partie 2 : Game Design
+    Le jeu est écrit en Java (21) avec JavaFX. Packages : engine, models (physics, input, powers, personnage), front (map), view.spritesheet.
+Chaque élément du jeu possède sa classe :
+
+Moteur et objets du jeu
+Entite            : Classe abstraite de base. Tout objet physique du terrain : position, vitesse, accélération et une Hitbox (update, render, Collision).
+Joueur            : Un footballeur. Se déplace par accélération et frottements, mémorise sa dernière orientation, a une puissance de tir et un état
+                    (IDLE, COURS, TIRE, PASSE, TACLE, Glace, Pouvoir, Celebration). Il est piloté par un contrôleur.
+Ball              : Physique du ballon (vitesse, frottement, rebonds) et possession : LIBRE, EN_POSSESSION, TIRE, PASSE.
+                    Gère la récupération, le tir, la passe et le vol de balle par un tacle.
+Murs              : Rectangle infranchissable (bords du terrain, obstacles, poteaux et fond des cages).
+Goal              : Une cage : deux poteaux et un fond (des Murs) + une zone de but (Hitbox). estBut(Ball) détecte si le centre du ballon est dedans.
+Equipe            : Enumération Gauche / Droite.
+MatchManager      : Le chef d'orchestre. Construit le match depuis la carte choisie, fait avancer le jeu par pas fixes de 1/240 s, compte buts et temps,
+                    gère les phases COMPTE_A_REBOURS, EN_JEU, BUT, FINI (avec mort subite éventuelle) et demande l'affichage à VueMatch.
+
+Entrées et physique
+Controleur        : Interface qui décide "qui" dirige un joueur : direction voulue et action demandée.
+ControleurHumain  : Implémentation clavier : associe des touches à des directions et actions (tir, passe, tacle). Peut être désactivé (joueur gelé).
+Vector2D          : Vecteur immuable (add, sub, multiply, norm, normalize).
+Hitbox            : Rectangle de collision : détecte l'intersection et renvoie la direction de la collision (Direction).
+
+Personnages et pouvoirs
+Pouvoir           : Classe abstraite : nom, type (ATTAQUE / DEFENSE), durée d'activation, durée de recharge, disponibilité. activate() et charge().
+Hulk              : Pouvoir d'attaque : puissance de tir à 75 pendant 20 s, puis recharge (1 min).
+Pepe              : Pouvoir de défense : l'adversaire est gelé (état Glace) pendant 5 s, puis recharge (1 min 30).
+Personnage        : Joueur doté d'un pouvoir, gère le gel. Sous-classes : HulkPersonnage et PepePersonnage.
+
+Interface, cartes et affichage
+Framework         : JavaFX : fenêtre, AnimationTimer, dessin sur Canvas, clavier.
+MainApp           : Point d'entrée. Fenêtre, menu, création des deux ControleurHumain puis lancement d'un MatchManager.
+Menu / Parametres : Réglages : durée (1, 2, 3 ou 5 min), buts pour gagner (illimité, 3, 5, 10), carte, mort subite (objet immuable Parametres).
+Carte / CarteStade: CarteStade = interface d'une carte (taille, positions de départ, murs, cages), implémentée par MapClassique, MapPiliers, MapBarres.
+                    L'énumération Carte les liste pour le menu.
+VueMatch          : Dessine le match (terrain, joueurs, ballon, score, messages) à partir de l'état du MatchManager.
+SpriteJoueur, Annimation : Animations des joueurs à partir de spritesheets.
+Clavier, Fond     : Suivi des touches ; fond animé du menu et confettis lors d'un but.
+
+# Partie 3 : Level Design & Interface Graphique (Frontend)
+
+Pour la partie visuelle, l'objectif est de proposer un rendu fluide, lisible et dynamique, dans une ambiance de football arcade à la
+Inazuma Eleven, tout en restant 100 % cohérent avec l'architecture POO développée côté moteur.
+
+3.1 Direction artistique et vue de jeu
+Vue 2D du dessus (Top-Down) à l'horizontale. Le terrain tient entièrement dans la fenêtre (1200 x 700) : avec deux joueurs, aucune caméra
+mobile n'est nécessaire. Style pixel art : spritesheets animées (course, tir, passe, tacle, gel, célébration), tribunes pixelisées, confettis.
+
+3.2 Les cartes
+Chaque carte = une image de fond (pelouse, lignes, tribunes, cages) + une classe Java qui décrit la logique (murs, obstacles, cages, départs).
+    - Classique : terrain libre avec une cage de chaque côté ;
+    - Piliers   : quatre piliers au centre ;
+    - Barres    : deux barres horizontales qui coupent le milieu du terrain.
+
+3.3 Chargement de la carte
+Plus de fichier Tiled ni de MapLoader : chaque carte est une classe qui implémente CarteStade et construit directement ses objets du moteur
+(Murs, Goal, positions). Le MatchManager les récupère via l'interface, la VueMatch affiche l'image de fond correspondante.
+
+3.4 Interface et HUD
+    - tableau d'affichage : score des deux joueurs, chronomètre, mention "mort subite" ;
+    - compte à rebours avant chaque engagement et message de but avec confettis ;
+    - écran de fin de match avec le vainqueur ;
+    - menu de démarrage : durée, buts pour gagner, carte et mort subite.
+
+3.5 Commandes
+    Joueur 1 (gauche) : Z Q S D - Tir : E - Passe : R - Tacle : Espace
+    Joueur 2 (droite) : flèches - Tir : M - Passe : L - Tacle : K
