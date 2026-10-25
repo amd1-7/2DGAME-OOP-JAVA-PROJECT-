@@ -9,8 +9,14 @@ import com.game.front.Menu;
 import com.game.front.map.Carte;
 import com.game.front.selection.ParcoursSelection;
 import com.game.models.input.ControleurHumain;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -34,6 +40,7 @@ public class MainApp extends Application {
     private Ecran ecran = Ecran.MENU;
     private ParcoursSelection selection;
     private MatchManager match;
+    private MediaPlayer mediaPlayer;
 
     @Override
     public void start(Stage stage) {
@@ -43,6 +50,22 @@ public class MainApp extends Application {
         Scene scene = new Scene(new Group(canvas));
         brancherEvenements(scene, stage);
         demarrerBoucle();
+
+        URL audio = getClass().getResource("/assets/audio/musique.mp3");
+
+        if (audio != null) {
+            Media media = new Media(audio.toExternalForm());
+            mediaPlayer = new MediaPlayer(media);
+
+            // Boucler la musique indéfiniment
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+
+            // Ajuster le volume (entre 0.0 et 1.0)
+            mediaPlayer.setVolume(0.03);
+
+            // Lancer la musique
+            mediaPlayer.play();
+        }else{System.out.println("JBHFFBHH");}
 
         stage.setTitle("QADAR");
         stage.setScene(scene);
