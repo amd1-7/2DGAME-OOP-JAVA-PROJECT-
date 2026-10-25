@@ -93,7 +93,7 @@ mvn clean package
 ### Lancement
 
 ```bash
-java -jar target/Qadar.jar
+java -jar Qadar-V1.0.0.jar
 ```
 
 Ou directement avec Maven :
