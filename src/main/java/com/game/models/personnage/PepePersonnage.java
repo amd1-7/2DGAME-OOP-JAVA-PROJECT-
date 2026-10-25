@@ -9,7 +9,7 @@ import com.game.view.spritesheet.Annimation;
 
 public class PepePersonnage extends Personnage {
     public PepePersonnage(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,Annimation annimation,ControleurHumain controleurs){
-        super(position, hitbox, annimation, controleurs, 15);
+        super(position, hitbox, annimation, controleurs, 10);
     }
     
     public void setPouvoirJoueur(Joueur joueurAdverse) {

@@ -6,7 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 public class Hulk extends Pouvoir{
-    private double power = 75;
+    private double power = 15;
     public Hulk(Joueur joueur){
         super("Hulk",Type.ATTAQUE,Duration.minutes(33),Duration.seconds(20),joueur);
     }
