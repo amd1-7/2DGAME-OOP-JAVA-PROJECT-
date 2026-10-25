@@ -142,6 +142,9 @@ Les fichiers suivants contiennent de la Javadoc :
 - `Joueur.java`
 - `Pouvoir.java`
 - `ControleurHumain.java`
+- `Ball.java`
+- `Goal.java`
+- `Murs.java`
 
 **Réglages** (`front`)
 - `Parametres.java`
