@@ -138,6 +138,11 @@ Les fichiers suivants contiennent de la Javadoc :
 **Moteur** (`engine/init`)
 - `Maillot.java`
 
+**Jeu** (`game/`)
+- `Joueur.java`
+- `Pouvoir.java`
+- `ControleurHumain.java`
+
 **Réglages** (`front`)
 - `Parametres.java`
 
