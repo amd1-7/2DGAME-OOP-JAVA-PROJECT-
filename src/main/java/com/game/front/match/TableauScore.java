@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-/** Score des deux joueurs (aux couleurs de leur maillot) et chrono au centre. */
 public class TableauScore {
     private static final double Y = 30;
 

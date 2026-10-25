@@ -31,7 +31,6 @@ public interface CarteStade {
     /** @return le but de l'équipe Droite */
     Goal getButDroit();
 
-    /** Fabrique un mur rectangulaire : coin haut-gauche (x, y), largeur l, hauteur h. */
     static Murs mur(double x, double y, double l, double h) {
         Vector2D coin = new Vector2D(x, y);
         return new Murs(coin, new Hitbox(coin, l, h));

@@ -13,9 +13,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-/** Dessine un match : terrain, joueurs (via Joueur.render), balle, HUD, score, messages et confettis. */
 public class RenduMatch {
-    /** Taille sur laquelle Joueur.render dessine son sprite. */
     private static final double TAILLE_SPRITE = 32;
 
     private final Fond fond;

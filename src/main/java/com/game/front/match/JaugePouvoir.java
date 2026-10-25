@@ -2,15 +2,10 @@ package com.game.front.match;
 
 import com.game.models.powers.Pouvoir;
 
-/**
- * Suit l'état d'un pouvoir pour l'afficher : en charge (rouge), actif (orange) ou prêt (vert).
- * Le pouvoir reste maître : la jauge se cale sur son booléen « dispo ».
- */
 public class JaugePouvoir {
 
     public enum Phase { CHARGE, ACTIF, PRET }
 
-    /** Délai avant la toute première disponibilité (celui du constructeur de Pouvoir). */
     private static final double DELAI_INITIAL = 20;
 
     private final Pouvoir pouvoir;
