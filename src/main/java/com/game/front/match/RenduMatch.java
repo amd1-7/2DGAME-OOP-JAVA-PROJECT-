@@ -67,7 +67,6 @@ public class RenduMatch {
         gc.scale(echelle, echelle);
     }
 
-    /** Le sprite est centré dans la hitbox, puis dessiné par le render du joueur. */
     private void dessinerJoueur(GraphicsContext gc, Joueur joueur, double dt) {
         double decalage = (joueur.getHitbox().getWidth() - TAILLE_SPRITE) / 2;
         gc.save();

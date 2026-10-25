@@ -69,7 +69,7 @@ public class Menu {
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font("Arial", FontWeight.BOLD, 64));
-        gc.fillText("FOOT 1 VS 1", w / 2, 100 + Math.sin(t * 3) * 6);
+        gc.fillText("QADAR", w / 2, 100 + Math.sin(t * 3) * 6);
 
         gc.setFont(Font.font("Arial", FontWeight.NORMAL, 26));
         for (int l = 0; l < TITRES.length; l++) {

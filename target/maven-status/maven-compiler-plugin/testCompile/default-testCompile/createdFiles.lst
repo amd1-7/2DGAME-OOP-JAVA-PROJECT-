@@ -1,8 +1,0 @@
-com/game/model/JoueurTest.class
-com/game/model/BallTest.class
-com/game/model/physics/DirectionTest.class
-com/game/model/physics/HitboxTest.class
-com/game/model/powers/HulkTest.class
-com/game/model/physics/Vector2DTest.class
-com/game/model/EntiteTest.class
-com/game/model/EntiteTest$DummyEntite.class

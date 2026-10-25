@@ -44,13 +44,11 @@ public class MainApp extends Application {
         brancherEvenements(scene, stage);
         demarrerBoucle();
 
-        stage.setTitle("Foot 1 vs 1");
+        stage.setTitle("QADAR");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
-
-    // ---------------------------------------------------------------- évènements
 
     private void brancherEvenements(Scene scene, Stage stage) {
         scene.setOnKeyPressed(e -> toucheAppuyee(e.getCode()));
@@ -93,8 +91,6 @@ public class MainApp extends Application {
             for (ControleurHumain c : controleurs) c.toucheRelachee(touche);
         }
     }
-
-    // ---------------------------------------------------------------- boucle
 
     private void demarrerBoucle() {
         new AnimationTimer() {
