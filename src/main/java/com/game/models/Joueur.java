@@ -27,15 +27,15 @@ public class Joueur extends Entite {
     protected Vector2D dernierOrientation;
     protected  EtatJoueur etatJoueur = EtatJoueur.IDLE;
     protected  boolean isProprietaire = false;
-    private Annimation annimation;
+    protected Annimation annimation;
 
-    private int indexCourse = 1;
-    private int indexTire = 1;
-    private int indexPasse = 1;
-    private int indexTacle = 1;
-    private int indexGlace = 1;
-    private int indexCelebration = 1;
-    private double timerAnimation = 0;
+    protected int indexCourse = 1;
+    protected int indexTire = 1;
+    protected int indexPasse = 1;
+    protected int indexTacle = 1;
+    protected int indexGlace = 1;
+    protected int indexCelebration = 1;
+    protected double timerAnimation = 0;
 
    public Joueur(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Image image,double puissanceTir,Annimation annimation){
         super(position, vitesse, acceleration, hitbox);
@@ -56,6 +56,9 @@ public class Joueur extends Entite {
 
     public Vector2D getDernierOrientation() {
         return dernierOrientation;
+    }
+    public void setDernierOrientation(Vector2D dernierOrientation) {
+        this.dernierOrientation = dernierOrientation;
     }
 
     public double getPuissanceTir() {
@@ -152,7 +155,7 @@ public class Joueur extends Entite {
     public void tacler(){
         if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == true)return;
         this.etatJoueur = EtatJoueur.TACLE;
-        PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e->{
             this.etatJoueur = EtatJoueur.IDLE;
         });
@@ -161,7 +164,7 @@ public class Joueur extends Entite {
     public void tirer(){
         if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == false)return;
         this.etatJoueur = EtatJoueur.TIRE;
-        PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
+        PauseTransition pause = new PauseTransition(Duration.seconds(8));
         pause.setOnFinished(e->{
             this.etatJoueur = EtatJoueur.IDLE;
         });
@@ -170,7 +173,7 @@ public class Joueur extends Entite {
     public void passer(){
         if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == false)return;
         this.etatJoueur = EtatJoueur.PASSE;
-        PauseTransition pause = new PauseTransition(Duration.seconds(2.5));
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e->{
             this.etatJoueur = EtatJoueur.IDLE;
         });
@@ -179,6 +182,24 @@ public class Joueur extends Entite {
 
 
     public void render(GraphicsContext gc,double dt){
+        Image img = this.chooseImage(dt);
+        Vector2D dir = this.getDernierOrientation();
+
+        if (dir.getX() != 0 || dir.getY() != 0) {
+            double angle = Math.toDegrees(Math.atan2(dir.getY(), dir.getX()));
+
+            gc.save();
+            gc.translate(this.position.getX() + 32 / 2.0, this.position.getY() + 32 / 2.0);
+            gc.rotate(angle);
+            gc.drawImage(img, -32 / 2.0, -32 / 2.0, 32, 32);
+            gc.restore();
+        } 
+        else {
+            gc.drawImage(img, this.position.getX(), this.position.getY(), 32, 32);
+        }
+    }
+
+    protected Image chooseImage(double dt){
         Image img = this.annimation.getIdle();
         switch (this.etatJoueur) {
             case IDLE ->{
@@ -218,7 +239,7 @@ public class Joueur extends Entite {
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
-                    if (this.indexPasse +1 < this.annimation.getListImageCourse().size())this.indexPasse++;
+                    if (this.indexPasse +1 < this.annimation.getListImagePasse().size())this.indexPasse++;
                     else this.indexPasse = 0;
                     this.timerAnimation -= 0.1;
                 }
@@ -235,7 +256,7 @@ public class Joueur extends Entite {
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
-                    if (this.indexTire +1 < this.annimation.getListImageCourse().size())this.indexTire++;
+                    if (this.indexTire +1 < this.annimation.getListImageTire().size())this.indexTire++;
                     else this.indexTire = 0;
                     this.timerAnimation -= 0.1;
                     }
@@ -250,7 +271,7 @@ public class Joueur extends Entite {
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
-                    if (this.indexTacle +1 < this.annimation.getListImageCourse().size())this.indexTacle++;
+                    if (this.indexTacle +1 < this.annimation.getListImageTacle().size())this.indexTacle++;
                     else this.indexTacle = 0;
                     this.timerAnimation -= 0.1;
                     }
@@ -264,10 +285,10 @@ public class Joueur extends Entite {
                 this.indexCelebration = 0;
                 this.timerAnimation += dt;
 
-                if(0.625 <= this.timerAnimation){
+                if(0.2 <= this.timerAnimation){
                     if(this.indexGlace +1 < this.annimation.getListeImageGlacon().size())this.indexGlace++;
                     else this.indexGlace = 0;
-                    this.timerAnimation -= 0.625;
+                    this.timerAnimation -= 0.2;
                 }
                 img = this.annimation.getListeImageGlacon().get(indexGlace);
             }
@@ -280,29 +301,15 @@ public class Joueur extends Entite {
                 this.timerAnimation += dt;
 
                 if(0.1 <= this.timerAnimation){
-                    if(this.indexCelebration +1 < this.annimation.getListeImageGlacon().size())this.indexCelebration++;
+                    if(this.indexCelebration +1 < this.annimation.getListImageCelebration().size())this.indexCelebration++;
                     else this.indexCelebration = 0;
-                    this.timerAnimation -= 0.625;
+                    this.timerAnimation -= 0.1;
                 }
                 img = this.annimation.getListImageCelebration().get(indexCelebration);
             }
             default ->{;}
         }
-
-        Vector2D dir = this.getDernierOrientation();
-
-        if (dir.getX() != 0 || dir.getY() != 0) {
-            double angle = Math.toDegrees(Math.atan2(dir.getY(), dir.getX()));
-
-            gc.save();
-            gc.translate(this.position.getX() + 32 / 2.0, this.position.getY() + 32 / 2.0);
-            gc.rotate(angle);
-            gc.drawImage(img, -32 / 2.0, -32 / 2.0, 32, 32);
-            gc.restore();
-        } 
-        else {
-            gc.drawImage(img, this.position.getX(), this.position.getY(), 32, 32);
-        }
+        return img;
     }
 
     @Override

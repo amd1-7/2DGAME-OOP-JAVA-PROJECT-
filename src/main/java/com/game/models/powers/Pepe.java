@@ -8,7 +8,7 @@ public class Pepe extends Pouvoir {
 
     private Joueur joueurAdversaire;
     public Pepe(Joueur joueur,Joueur joueurAdversaire){
-        super("Pepe", Type.DEFENSE, Duration.minutes(1.5),Duration.seconds(5),joueur);
+        super("Pepe", Type.DEFENSE, Duration.minutes(1.5),Duration.seconds(16),joueur);
         this.joueurAdversaire = joueurAdversaire;
     }
     @Override
