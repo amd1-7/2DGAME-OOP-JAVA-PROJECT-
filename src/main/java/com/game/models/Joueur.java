@@ -89,6 +89,8 @@ public class Joueur extends Entite {
     }
 
     @Override
+    /** 
+     * @param mettre à jour le joueur  */
     public void update(double dt,Murs[] murs){
         double f = 1200;
         double k = 5;
@@ -121,6 +123,8 @@ public class Joueur extends Entite {
         this.getHitbox().setPosition(this.position);
     }
 
+     /** 
+     * @param en cas de collision réagir en fonction de la direction inverse de la vitesse */
     protected void Collision(Murs[] murs){
         for (Murs mur : murs) {
         Hitbox m = mur.getHitbox();
@@ -151,7 +155,8 @@ public class Joueur extends Entite {
         }
     }
     }
-
+     /** 
+     * @param mettre à jour état joueur */
     public void tacler(){
         if ((this.etatJoueur != EtatJoueur.IDLE || this.etatJoueur != EtatJoueur.COURS) && this.isProprietaire == true)return;
         this.etatJoueur = EtatJoueur.TACLE;
@@ -180,7 +185,8 @@ public class Joueur extends Entite {
         pause.play();
     }
 
-
+     /** 
+     * @param dessiner joueur  */
     public void render(GraphicsContext gc,double dt){
         Image img = this.chooseImage(dt);
         Vector2D dir = this.getDernierOrientation();

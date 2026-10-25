@@ -53,6 +53,11 @@ abstract public class Pouvoir {
         first.play();
     }
 
+     /** 
+     * @param activer pouvoir via input  */
     public abstract void activate();
+
+     /** 
+     * @param recharger pouvoir après fin  */
     protected abstract void charge();
 }

@@ -72,6 +72,9 @@ public class MatchManager extends AnimationTimer {
     }
 
 
+     /** 
+     * @param creer but
+     * @return Murs[] pour creer Goal  */
     private Murs[] rassemblerMurs() {
         List<Murs> liste = new ArrayList<>(List.of(map.getMurs()));
         for (Goal but : buts) liste.addAll(List.of(but.getMurs()));
@@ -110,6 +113,7 @@ public class MatchManager extends AnimationTimer {
 
 
     @Override
+    /** @param boucle lancer jeu  */
     public void handle(long now) {
         double dt = dernier == 0 ? 0 : (now - dernier) / 1_000_000_000.0;
         dernier = now;

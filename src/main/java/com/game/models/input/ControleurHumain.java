@@ -23,6 +23,9 @@ public class ControleurHumain implements Controleur{
         this.touchesSpecial = touchesSpecial;
         this.touchesAction = touchesAction;
     }
+     /** 
+     * @param si actif le joueur peut bouger sinon non
+     * @return boolean  */
     public boolean getActif(){
         return this.actif;
     }
@@ -30,6 +33,8 @@ public class ControleurHumain implements Controleur{
         this.actif = actif;
     }
 
+     /** 
+     * @param mettre verif si touche enregistré  */
     public void toucheAppuyee(KeyCode k){
         if(!touches.containsKey(k) && !touchesSpecial.containsKey(k) && !touchesAction.containsKey(k)) return;
         if(toucheAppuyee.add(k)) return;
@@ -38,6 +43,9 @@ public class ControleurHumain implements Controleur{
         toucheAppuyee.remove(k);
     }
 
+     /** 
+     * @param donner direction voulue du joueur via son input
+     * @return Vector2D  */
     public Vector2D getDirection(){
         Vector2D v = new Vector2D(0, 0);
         if(!this.actif)return v;
@@ -49,6 +57,9 @@ public class ControleurHumain implements Controleur{
         return v;
     }
 
+     /** 
+     * @param donner actionJoueur (sansballon/avec ballon)
+     * @return Etat/EtatJoueur  */
     public Etat getActionJoueur(){
         Etat etat = Etat.EN_POSSESSION;
         if(!this.actif)return etat;
