@@ -35,10 +35,20 @@ public class Goal {
         this.construireGeometrie();
     }
 
+    /**
+     * 
+     * @param Permet de construire le goal avec le point de depart (centre)
+     * @return Vector2D
+      */
     private Vector2D point(double a, double l) {
         return position.sub(avant.multiply(a)).add(cote.multiply(l));
     }
 
+    /**
+     * 
+     * @param Permet à partir du point creer cage et hitbox centrale
+     * @return Hitbox
+      */
     private Hitbox rectangle(double a0, double a1, double l0, double l1) {
         Vector2D p0 = point(a0, l0);
         Vector2D p1 = point(a1, l1);
@@ -46,6 +56,10 @@ public class Goal {
         return new Hitbox(coin, Math.abs(p1.getX() - p0.getX()), Math.abs(p1.getY() - p0.getY()));
     }
 
+    /**
+     * @param h
+     * @return Murs
+      */
     private Murs mur(Hitbox h) {
         return new Murs(h.getPosition(), h);
     }
@@ -64,6 +78,11 @@ public class Goal {
         return new Murs[]{poteauA, poteauB, fond};
     }
 
+    /**
+     * 
+     * @param balle
+     * @return boolean
+      */
     public boolean estBut(Ball balle) {
         return zoneBut.contient(balle.getHitbox().getCentre());
     }

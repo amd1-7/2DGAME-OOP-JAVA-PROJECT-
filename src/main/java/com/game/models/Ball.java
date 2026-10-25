@@ -21,6 +21,11 @@ public class Ball extends Entite {
     private double delaiRecup;
 
 
+    /**
+     * 
+     * @param position
+     * @param hitbox
+      */
     public Ball(Vector2D position,Hitbox hitbox){
         super(position,new Vector2D(0,0), new Vector2D(0,0),hitbox);
         this.proprietaire = null;
@@ -28,6 +33,9 @@ public class Ball extends Entite {
         this.etat = Etat.LIBRE;
     }
 
+    /**
+     * @return Etat
+      */
     public Etat getEtat() {
         return etat;
     }
