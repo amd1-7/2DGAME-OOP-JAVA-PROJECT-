@@ -11,7 +11,7 @@ import javafx.util.Duration;
 
 public class HulkPersonnage extends Personnage {
     public HulkPersonnage(Vector2D position,Vector2D vitesse,Vector2D acceleration,Hitbox hitbox,ControleurHumain controleurs,Annimation annimation){
-        super(position, hitbox, annimation, controleurs, 10);
+        super(position, hitbox, annimation, controleurs, 7.5);
         this.setPouvoir(new Hulk(this));
     }
 

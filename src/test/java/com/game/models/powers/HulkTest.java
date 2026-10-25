@@ -14,8 +14,8 @@ import javafx.util.Duration;
 
 class HulkTest {
 
-    private static final double PUISSANCE_INITIALE = 15;
-    private static final double PUISSANCE_HULK = 75;
+    private static final double PUISSANCE_INITIALE = 10;
+    private static final double PUISSANCE_HULK = 15;
     private static final double EPS = 1e-9;
 
     private Joueur joueur;
