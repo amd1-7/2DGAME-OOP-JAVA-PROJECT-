@@ -18,7 +18,8 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - run: mvn -B test
+      - run: sudo apt-get update && sudo apt-get install -y xvfb maven
+      - run: xvfb-run -a mvn -B test
 
   release:
     needs: test
@@ -37,9 +38,9 @@ jobs:
       - run: mvn -B package -DskipTests
       - run: |
           JAR=$(ls target/*.jar | grep -v original | head -n 1)
-          cp "$JAR" "game-${VERSION}.jar"
+          cp "$JAR" "Qadar-${VERSION}.jar"
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: game-${{ env.VERSION }}.jar
+          files: Qadar-${{ env.VERSION }}.jar
