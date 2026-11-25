@@ -12,3 +12,4 @@ bin/
 frontend/bin/
 *.class 
 >>>>>>> feature/frontend
+.DS_Store

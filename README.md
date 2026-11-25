@@ -12,8 +12,9 @@ Deux joueurs s'affrontent sur le même clavier. Chacun choisit son maillot et un
 4. [Répartition des tâches](#répartition-des-tâches)
 5. [Installation et lancement](#installation-et-lancement)
 6. [Tests](#tests)
-7. [Javadoc](#javadoc)
-8. [Auteurs et remerciements](#auteurs-et-remerciements)
+7. [Intégration continue et versions](#intégration-continue-et-versions)
+8. [Javadoc](#javadoc)
+9. [Auteurs et remerciements](#auteurs-et-remerciements)
 
 ## Le jeu
 
@@ -127,6 +128,31 @@ mvn test -Dtest=HitboxTest
 ```
 
 Le rapport de couverture **JaCoCo** est généré par `mvn test` dans `target/site/jacoco/index.html`.
+
+## Intégration continue et versions
+
+Un workflow GitHub Actions (`.github/workflows/ci.yml`) lance `mvn test` à chaque push et à chaque pull request, sur toutes les branches.
+
+Quand un push sur `main` passe les tests, le workflow construit le jar et crée automatiquement une **release GitHub** avec un numéro de version au format `MAJEUR.MINEUR.X` :
+
+- `MAJEUR.MINEUR` est fixé dans le fichier `ci.yml` ;
+- `X` est le numéro du run GitHub Actions et augmente tout seul à chaque release.
+
+### Changer le numéro de version
+
+Pour passer à une nouvelle version majeure ou mineure (par exemple de `1.0.X` à `2.0.X`), modifier cette ligne dans `.github/workflows/ci.yml` :
+
+```yaml
+run: echo "VERSION=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+```
+
+en :
+
+```yaml
+run: echo "VERSION=2.0.${{ github.run_number }}" >> $GITHUB_ENV
+```
+
+Puis commit et push sur `main` : la prochaine release s'appellera `v2.0.X`. Le jar est téléchargeable depuis l'onglet **Releases** du dépôt.
 
 ## Javadoc
 
