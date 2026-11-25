@@ -45,7 +45,7 @@ class PepeTest {
     @Test
     void constructeur_definitLesDurees() {
         assertEquals(Duration.seconds(16), pepe.getDuréeActivate());
-        assertEquals(Duration.minutes(33), pepe.getDuréeCharge());
+        assertEquals(Duration.seconds(33), pepe.getDuréeCharge());
     }
 
     @Test

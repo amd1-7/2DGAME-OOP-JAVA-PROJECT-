@@ -42,7 +42,7 @@ class HulkTest {
     @Test
     void constructeur_definitLesDurees() {
         assertEquals(Duration.seconds(20), hulk.getDuréeActivate());
-        assertEquals(Duration.minutes(33), hulk.getDuréeCharge());
+        assertEquals(Duration.seconds(33), hulk.getDuréeCharge());
     }
 
     @Test
